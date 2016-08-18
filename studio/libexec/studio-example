@@ -65,7 +65,7 @@ cetskelgen "$skeltag" "$name"
 # ===========
 # == cmake ==
 # ===========
-if [ "$skeltag" == "analyzer" -o "$skeltag" == "filter" -o "$skeltag" == filter ]; then
+if [ "$skeltag" == "analyzer" -o "$skeltag" == "filter" -o "$skeltag" == producer ]; then
 	tag="module"
 fi
 if [ "$skeltag" == "service" ]; then
