@@ -80,16 +80,11 @@ fi
 
 #empty qual messages
 if [ -z "$ver" ] && [ -z "$rep" ]; then
-echo "You have not supplied a version number for your collaboration's code."
-echo "Default version used."
-echo "Check the help pages to see which is the default version."
-echo ""	
+echo "Default version is being used."
 fi
 
 if [ -z "$qual" ] && [ -z "$rep" ]; then
-echo "You have not supplied a qualifier for the version number you specified of your collaboration's code."
-echo "Default qualifiers used."
-echo "Check the help pages to see which are the default qualifiers."
+echo "Default qualifiers is being used used."
 echo ""
 fi
 
@@ -140,7 +135,15 @@ LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
 echo "$PWD"
 cp ../studio* .
 
-echo "study area created. source setup script (every time you log in) and you're good to go. check help pages for more"
+echo ""
+echo "    ++++++++++++++++++++++++++++++++++++++++++    "
+echo "    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    "
+echo "    ========== study area created! ===========    "
+echo "    === source setup every time you login! ===    "
+echo "    === studio help or studio help command ===    "
+echo "    ========== for more details!   ===========    "
+echo "    ++++++++++++++++++++++++++++++++++++++++++    "
+echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 else
 
 #NORMAL DIRECTORY TREE
@@ -154,30 +157,38 @@ cp ../studio* .
 	else
 	    mkdir build
 	    touch build/CMakeCache.txt
-	    echo "made build directory\n"
+	    echo "made build directory"
             echo ""
 	fi
 	
     echo -e "Checking for an external  directory..."	
 	if [ -d ext ]; then
-	    echo "ext directory already exists\n"
+	    echo "ext directory already exists"
             echo ""
 	else
 	    mkdir ext 
-	    echo "made ext directory\n"
+	    echo "made ext directory"
 	    echo ""
 	fi
 	
     echo -e "Checking for a source  directory..."	
 	if [ -d src ]; then
-	    echo "source directory already exists\n"
+	    echo "source directory already exists"
             echo ""
 	else
 	    mkdir src
-	    echo "made src directory\n"
+	    echo "made src directory"
 	    echo ""
 	fi
-echo "study area created. source setup script (every time you log in) and you're good to go. check help pages for more"
+echo ""
+echo "    ++++++++++++++++++++++++++++++++++++++++++    "
+echo "    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    "
+echo "    ========== study area created! ===========    "
+echo "    === source setup every time you login! ===    "
+echo "    === studio help or studio help command ===    "
+echo "    ========== for more details!   ===========    "
+echo "    ++++++++++++++++++++++++++++++++++++++++++    "
+echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 
 # === may need to change where this is done ===
 # === probably after the if switch for wkbk ===	
