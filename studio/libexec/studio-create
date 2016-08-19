@@ -133,7 +133,6 @@ LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
 EOF
 #temp fix for studio not being an installed prod?
 echo "$PWD"
-cp ../studio* .
 
 echo ""
 echo "    ++++++++++++++++++++++++++++++++++++++++++    "
@@ -149,7 +148,6 @@ else
 #NORMAL DIRECTORY TREE
 mkdir study-area
 cd study-area
-cp ../studio* .
     echo -e "\nChecking for a build directory..."
         if [ -d build ]; then
             echo "build directory already exists"
