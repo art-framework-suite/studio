@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 
-# Usage: studio create <MANDATORY> [-e] (collab code) 
-#	       	       <OPTIONAL>  [-v] (version) <OPTIONAL >[-q] (qualifier) 
+# Usage: studio create <MANDATORY> [-e] (collab code)
+#                      <OPTIONAL>  [-v] (version) <OPTIONAL >[-q] (qualifier)
 # Summary: Creates the study area!
 # This will make your directory tree and populate appropriate cmake files!
 # Help: studio create will make your study area. studio create requires a ups installed product.
-# this can be anything from art to lariatsoft. If additional qualifiers are not passed default 
-# versions are chosen by studio 
-#     -e	preceeds the name of an installed ups product. These options can be passed in any order 
+# this can be anything from art to lariatsoft. If additional qualifiers are not passed default
+# versions are chosen by studio
+#     -e	preceeds the name of an installed ups product. These options can be passed in any order
 #		but this one is mandatory.
 #
-#     -v 	preceeds the version number. If you ask a version number that is not available from ups active
+#     -v        preceeds the version number. If you ask a version number that is not available from ups active
 #		then ups will yell at you.
-#     
+#
 #     -q	preceeds the qualifer. Same.
 
 #     ex.	studio create -e lariatsoft -v v06_03_00 -q e10:prof
-#     or	studio create -e duneTPC -q e10:debug 
+#     or	studio create -e duneTPC -q e10:debug
 #     or	studio create -e uboonecode
 set -e
 #=========================================================================================================
-#========================================================================================================= 
+#=========================================================================================================
 #=========================================READING IN ARGUMENTS============================================
 #=========================================================================================================
 #=========================================================================================================
@@ -90,7 +90,7 @@ fi
 
 
 #=========================================================================================================
-#==============================================MAKING===================================================== 
+#==============================================MAKING=====================================================
 #=============================================NEC DIRS====================================================
 #===========================================&cmakelists?==================================================
 #====================================================================+====================================
@@ -102,14 +102,14 @@ fi
 if [ "$rep" == "art-workbook" ]; then
 echo "hmm... you want the art workbook.."
 echo "here we go..."
-git clone http://cdcvs.fnal.gov/projects/art-workbook 
+git clone http://cdcvs.fnal.gov/projects/art-workbook
 mv $PWD/art-workbook $PWD/study-area
 mv $PWD/study-area/art-workbook $PWD/study-area/src
 cd study-area
 mkdir build
 touch build/CMakeCache.txt
 mkdir ext
-BUILD_DIR=`pwd`/build	
+BUILD_DIR=`pwd`/build
 EXT_PATH=`pwd`/ext
 SRC_DIR=`pwd`/src
 #LIB_PATH=${INSTALL_PATH}/lib
@@ -123,14 +123,14 @@ SRC_DIR=`pwd`/src
 # export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_PATH
 #fi
 #PATH=${PATH}:${BIN_PATH}
-cat <<-EOF > setup.sh
+cat << EOF > setup.sh
 #!/usr/bin/env bash
-#Setup script for "$exp" with requested version and qualifiers (may default to current version) 
+#Setup script for "$exp" with requested version and qualifiers (may default to current version)
 source ups/setup_for_development -d e7:s14
 export BUILD_PATH="$BUILD_DIR"
 export SRC_PATH="$SRC_DIR"
 LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
-	EOF
+EOF
 #temp fix for studio not being an installed prod?
 echo "$PWD"
 cp ../studio* .
@@ -150,36 +150,36 @@ else
 mkdir study-area
 cd study-area
 cp ../studio* .
-    echo -e "\nChecking for a build directory..."	
-	if [ -d build ]; then 
-	    echo "build directory already exists"
-	    echo ""
-	else
-	    mkdir build
-	    touch build/CMakeCache.txt
-	    echo "made build directory"
+    echo -e "\nChecking for a build directory..."
+        if [ -d build ]; then
+            echo "build directory already exists"
             echo ""
-	fi
-	
-    echo -e "Checking for an external  directory..."	
-	if [ -d ext ]; then
-	    echo "ext directory already exists"
+        else
+            mkdir build
+            touch build/CMakeCache.txt
+            echo "made build directory"
             echo ""
-	else
-	    mkdir ext 
-	    echo "made ext directory"
-	    echo ""
-	fi
-	
-    echo -e "Checking for a source  directory..."	
-	if [ -d src ]; then
-	    echo "source directory already exists"
+        fi
+
+    echo -e "Checking for an external  directory..."
+        if [ -d ext ]; then
+            echo "ext directory already exists"
             echo ""
-	else
-	    mkdir src
-	    echo "made src directory"
-	    echo ""
-	fi
+        else
+            mkdir ext
+            echo "made ext directory"
+            echo ""
+        fi
+
+    echo -e "Checking for a source  directory..."
+        if [ -d src ]; then
+            echo "source directory already exists"
+            echo ""
+        else
+            mkdir src
+            echo "made src directory"
+            echo ""
+        fi
 echo ""
 echo "    ++++++++++++++++++++++++++++++++++++++++++    "
 echo "    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    "
@@ -191,28 +191,28 @@ echo "    ++++++++++++++++++++++++++++++++++++++++++    "
 echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 
 # === may need to change where this is done ===
-# === probably after the if switch for wkbk ===	
-	BUILD_DIR=`pwd`/build	
-	EXT_PATH=`pwd`/ext
+# === probably after the if switch for wkbk ===
+        BUILD_DIR=`pwd`/build
+        EXT_PATH=`pwd`/ext
         SRC_DIR=`pwd`/src
-	#LIB_PATH=${INSTALL_PATH}/lib
-	##INC_PATH=${INSTALL_PATH}/include
-	#BIN_PATH=${INSTALL_PATH}/bin
-	##
-	#if [ -z "$LD_LIBRARY_PATH" ]
-	#then
-	# export LD_LIBRARY_PATH=$LIB_PATH
-	#else
-	# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_PATH
-	#fi
-	##
-	#PATH=${PATH}:${BIN_PATH}
-	##
+        #LIB_PATH=${INSTALL_PATH}/lib
+        ##INC_PATH=${INSTALL_PATH}/include
+        #BIN_PATH=${INSTALL_PATH}/bin
+        ##
+        #if [ -z "$LD_LIBRARY_PATH" ]
+        #then
+        # export LD_LIBRARY_PATH=$LIB_PATH
+        #else
+        # export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_PATH
+        #fi
+        ##
+        #PATH=${PATH}:${BIN_PATH}
+        ##
 
 
 
 #=========================================================================================================
-#==============================================MAKING===================================================== 
+#==============================================MAKING=====================================================
 #===========================================SETUP SCRIPT==================================================
 #=========================================================================================================
 #=========================================================================================================
@@ -241,7 +241,7 @@ if [ -z "$qual" ] && [ ! -z "$ver" ]; then
   echo "setup $exp $ver -q $qual"
   echo ""
 fi
-#no version and no qual specified? 
+#no version and no qual specified?
 if [ -z "$ver" ] && [ -z "$qual"]; then
   ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
   e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
@@ -254,14 +254,14 @@ fi
 
 # writing the setup script
 
-cat <<-EOF > setup.sh
+cat << EOF > setup.sh
 #!/usr/bin/env bash
-#Setup script for "$exp" with requested version and qualifiers (may default to current version) 
+#Setup script for "$exp" with requested version and qualifiers (may default to current version)
 setup $exp $ver -q $qual
 export BUILD_PATH=$BUILD_DIR
 export SRC_PATH=$SRC_DIR
 LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
-	EOF
+EOF
 
 # <<<<<<<<<<<<<<< ending the check for artworkbook
 fi
@@ -269,19 +269,19 @@ fi
 
 
 #=========================================================================================================
-#==============================================CMAKE====================================================== 
+#==============================================CMAKE======================================================
 #=============================================LISTS &=====================================================
 #=============================================COMMANDS====================================================
 #=========================================================================================================
 
 #CMake stuff
-cat <<-'EOF' > helpers.cmake
+cat << 'EOF' > helpers.cmake
 #cmake macro
 
 #macro for grabbing compiler directories
 macro(get_comp_paths)
 execute_process(COMMAND type -p g++ OUTPUT_VARIABLE gpp_path)
-execute_process(COMMAND type -p gcc OUTPUT_VARIABLE gcc_path) 
+execute_process(COMMAND type -p gcc OUTPUT_VARIABLE gcc_path)
 message(STATUS "gpp path: ${gpp_path}")
 message(STATUS "gcc path: ${gcc_path}")
 endmacro(get_comp_paths)
@@ -322,7 +322,7 @@ endmacro()
 #========================
 
 
-#here is where we find the lib directories 
+#here is where we find the lib directories
 macro(find_lib_dirs)
 
 execute_process(COMMAND ups active COMMAND grep -v "Active ups products:" COMMAND cut -d " " -f 1 COMMAND tr '[a-z]' '[A-Z]' OUTPUT_VARIABLE dirs)
@@ -349,9 +349,9 @@ endforeach(prod)
 #message(STATUS "${lib_dirs_list}")
 
 endmacro()
-	EOF
+EOF
 
-cat <<-'EOF' > CMakeLists.txt 
+cat << 'EOF' > CMakeLists.txt
 #CMakeLists for "$exp" with specific directory tree
 include(helpers.cmake)
 cmake_minimum_required(VERSION 2.8.9)
@@ -384,7 +384,7 @@ foreach(lib_prod ${lib_prod_list})
         #message(STATUS "${so}")
         string(REGEX REPLACE "^.*/lib([^/]*)\\.so$" "\\1" var ${so})
         #message(STATUS ${var})
-	set(${var} ${so})
+        set(${var} ${so})
     endforeach(so ${so_list})
 endforeach(lib_prod ${lib_prod_list})
     #root special case!
@@ -394,7 +394,7 @@ endforeach(lib_prod ${lib_prod_list})
         #message(STATUS "${root_so}")
         string(REGEX REPLACE "^/.*lib(.*)\\.so$" "\\1" root_var ${root_so})
         #message(STATUS ${root_var})
-	set(${root_var} ${root_so})
+        set(${root_var} ${root_so})
     endforeach(root_so ${root_lib_list})
 
 #lib lists per plugin
@@ -473,12 +473,12 @@ endif( NOT build_dir_list STREQUAL "no args")
 
 #add_executable(Test src/test.cc)
 #target_link_libraries(Test fhiclcpp)
-	EOF
+EOF
 
-cat <<-'EOF' > src/CMakeLists.txt
+cat << 'EOF' > src/CMakeLists.txt
 #source cmake list file
 #there are two general options:
-#    1. everything lives in src directory and we do it all here 
+#    1. everything lives in src directory and we do it all here
 #    2. subdirs (requires user to create some of the structure)
 #pro-con is easyness vs. choice of what to build
 
@@ -486,5 +486,4 @@ cat <<-'EOF' > src/CMakeLists.txt
 #    Plugin_name
 #    add_library(<fill in which library>)
 #    target_link_library(<more nonsense>)
-	EOF
-    
+EOF
