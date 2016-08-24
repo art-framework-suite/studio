@@ -255,6 +255,7 @@ fi
 cat << EOF > setup.sh
 #!/usr/bin/env bash
 #Setup script for "$exp" with requested version and qualifiers (may default to current version)
+setup studio
 setup $exp $ver -q $qual
 export BUILD_PATH=$BUILD_DIR
 export SRC_PATH=$SRC_DIR
