@@ -48,6 +48,9 @@ fi
 if [ "$1" == "-r" ]; then
     rep=$2
 fi
+if [ "$1" == "-n" ]; then
+    name=$2
+fi
 ##second option
 if [ "$3" == "-e" ]; then
     exp=$4
@@ -61,7 +64,9 @@ fi
 if [ "$3" == "-r" ]; then
     rep=$4
 fi
-
+if [ "$3" == "-n" ]; then
+    name=$4
+fi
 ##third option
 if [ "$5" == "-e" ]; then
     exp=$6
@@ -74,8 +79,25 @@ if [ "$5" == "-q" ]; then
 fi
 if [ "$5" == "-r" ]; then
     rep=$6
-#else
-#    echo "Options not recognized... please see help pages."
+fi
+if [ "$5" == "-n" ]; then
+    name=$6
+fi
+##third option
+if [ "$7" == "-e" ]; then
+    exp=$8
+fi
+if [ "$7" == "-v" ]; then
+    ver=$8
+fi
+if [ "$7" == "-q" ]; then
+    qual=$8
+fi
+if [ "$7" == "-r" ]; then
+    rep=$8
+fi
+if [ "$7" == "-n" ]; then
+    name=$8
 fi
 
 #empty qual messages
@@ -88,6 +110,11 @@ echo "Default qualifiers is being used used."
 echo ""
 fi
 
+if [ -z "$name" ] && [ -z "$rep" ]; then
+name=study-area
+echo "Default study-area directory name being used."
+echo ""
+fi
 
 #=========================================================================================================
 #==============================================MAKING=====================================================
@@ -146,8 +173,10 @@ echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 else
 
 #NORMAL DIRECTORY TREE
-mkdir study-area
-cd study-area
+#mkdir study-area
+#cd study-area
+mkdir $name
+cd $name
     echo -e "\nChecking for a build directory..."
         if [ -d build ]; then
             echo "build directory already exists"
