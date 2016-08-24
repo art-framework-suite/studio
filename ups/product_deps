@@ -1,0 +1,42 @@
+# The parent line must be the first non-comment line in the file
+# This line defines the product name and version
+parent studio	v0_01_00
+no_fq_dir
+
+# These optional lines define the installed directories where headers,
+# libraries, and executables will be found.
+# Use them only if your product does not conform to the defaults
+#
+# Format: directory_type directory_path directory_name
+#
+# The only recognized values of the first field are fcldir, gdmldir, incdir, libdir, and bindir
+# The only recognized values of the second field are product_dir, fq_dir, and -
+# The third field is not constrained.
+#
+bindir	product_dir	bin
+
+# if define_pythonpath is enabled, the PYTHONPATH variable will be set
+#define_pythonpath
+
+# list all products here
+# the 4th field may be either optional or only_for_build
+product		version
+cetbuildtools   v5_04_03	-	only_for_build
+end_product_list
+
+qualifier	cetbuildtools
+-nq-            -nq-
+end_qualifier_list
+
+table_fragment_begin
+# this is a table file fragment
+# it will be copied verbatim
+table_fragment_end
+
+# Preserve tabs and formatting in emacs and vi / vim:
+
+### Local Variables:
+### tab-width: 8
+### End:
+
+# vi:set ts=8 noexpandtab:
