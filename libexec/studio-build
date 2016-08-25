@@ -103,15 +103,3 @@ echo "pwd = $PWD"
 
 cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $BUILD_PATH ..
 make 
-
-
-
-
-
-
-
-
-
-
-
-#tears
