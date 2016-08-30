@@ -28,3 +28,8 @@ add_subdirectory(ups)
 
 # packaging utility
 include(UseCPack)
+
+
+#add_custom_command(TARGET studio POST_BUILD
+#    COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/libexec/studio ${CURRENT_SOURCE_DIR}/bin/studio)
+#install(CODE "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/libexec/studio ${CMAKE_CURRENT_SOURCE_DIR}/bin/studio)")

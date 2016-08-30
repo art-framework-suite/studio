@@ -14,7 +14,7 @@ no_fq_dir
 # The third field is not constrained.
 #
 bindir	product_dir	bin
-
+libdir  product_dir     libexec
 # if define_pythonpath is enabled, the PYTHONPATH variable will be set
 #define_pythonpath
 
@@ -29,8 +29,10 @@ qualifier	cetbuildtools
 end_qualifier_list
 
 table_fragment_begin
-    execute("source ${UPS_PROD_DIR}/bin/wrapper.sh", NO_UPS_ENV)
-    execute("source ${UPS_PROD_DIR}/bin/studio.bash", NO_UPS_ENV)
+    execute("chmod +x ${UPS_PROD_DIR}/libexec/studio*", NO_UPS_ENV)
+    execute("ln -sf ${UPS_PROD_DIR}/libexec/studio ${UPS_PROD_DIR}/bin/studio", NO_UPS_ENV)
+    execute("source ${UPS_PROD_DIR}/bin/.wrapper.sh", NO_UPS_ENV)
+    execute("source ${UPS_PROD_DIR}/bin/.studio.bash", NO_UPS_ENV)
 # this is a table file fragment
 # it will be copied verbatim
 table_fragment_end

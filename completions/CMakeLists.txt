@@ -1,4 +1,4 @@
 install_scripts( LIST
-  studio.bash
-  studio.zsh 
+  .studio.bash
+  .studio.zsh 
   )
