@@ -8,4 +8,5 @@ install_scripts( LIST
   studio
   studio-example
   studio-create
+  wrapper.sh
   )

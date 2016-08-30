@@ -29,7 +29,8 @@ qualifier	cetbuildtools
 end_qualifier_list
 
 table_fragment_begin
-    execute("eval \"$(/home/rbouabid/scratch/local-products/studio/v0_01_00/bin/studio init -)\"", NO_UPS_ENV)
+    execute("source ${UPS_PROD_DIR}/bin/wrapper.sh", NO_UPS_ENV)
+    execute("source ${UPS_PROD_DIR}/bin/studio.bash", NO_UPS_ENV)
 # this is a table file fragment
 # it will be copied verbatim
 table_fragment_end
