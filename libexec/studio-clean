@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Usage: studio clean   
+# Summary: Cleans build directory. 
+# Help: studio clean is here to clean builddir
+
+if [ -z $BUILD_PATH ]; then
+  echo "Please source setup script"
+  exit 1
+fi
+
+cd $BUILD_PATH
+rm -rf *

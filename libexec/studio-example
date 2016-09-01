@@ -23,6 +23,10 @@
 #               <...    add_library(myAnalyzer_module SHARED myAnalyzer_module.cc)
 #       		target_link_libraries(myAnalyzer ${module_lib_list} ... >
 
+if [ -z $SRC_PATH ]; then
+  echo "Please source setup script"
+  exit 1
+fi
 
 skeltag=""
 ep=""
@@ -81,7 +85,7 @@ liblist="\${${tag}_lib_list}"
 #echo "$src_name"
 #echo "$liblist"
 
-cat << EOT >> CMakeLists.txt
+cat << EOT >> $SRC_PATH/CMakeLists.txt
 
 #"$name" lib linking
 add_library($targ_name SHARED $src_name)
@@ -89,8 +93,8 @@ target_link_libraries($targ_name $liblist)
 
 EOT
 
-touch "$targ_name".fcl
-cat << EOT >> "$targ_name".fcl
+touch $SRC_PATH/"$targ_name".fcl
+cat << EOT >> $SRC_PATH/"$targ_name".fcl
 #"$targ_name".fcl
 #bare bones fcl test
 

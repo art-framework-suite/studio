@@ -100,20 +100,52 @@ if [ "$7" == "-n" ]; then
     name=$8
 fi
 
-#empty qual messages
+
+# dummy catchers
+if [ -z "$exp" ] && [ -z "$rep" ]; then
+echo "Please specificy a ups product name."
+exit
+fi
+
+if [ ! -z "$exp" ] && [ ! -z "$rep" ]; then
+echo "You cannot specify a ups product *and* a repository."
+exit
+fi
+
+if [ "$exp" == "-n" ] || [ "$exp" == "-v" ] || [ "$exp" == "-q" ]; then
+echo "Please check syntax."
+exit
+fi
+
+if [ "$name" == "-e" ] || [ "$name" == "-v" ] || [ "$exp" == "-q" ]; then
+echo "Please check syntax."
+exit
+fi
+
+if [ "$ver" == "-e" ] || [ "$ver" == "-n" ] || [ "$ver" == "-q" ]; then
+echo "Please check syntax."
+exit
+fi
+
+if [ "$qual" == "-e" ] || [ "$qual" == "-n" ] || [ "$qual" == "-v" ]; then
+echo "Please check syntax."
+exit
+fi
+
+# empty qual messages
 if [ -z "$ver" ] && [ -z "$rep" ]; then
-echo "Default version is being used."
+#echo "Default version is being used."
+echo "No version specified."
 fi
 
 if [ -z "$qual" ] && [ -z "$rep" ]; then
-echo "Default qualifiers is being used used."
-echo ""
+#echo "Default qualifiers is being used used."
+echo "No qualifiers specified."
 fi
 
 if [ -z "$name" ] && [ -z "$rep" ]; then
 name=study-area
 echo "Default study-area directory name being used."
-echo ""
 fi
 
 #=========================================================================================================
@@ -130,9 +162,9 @@ if [ "$rep" == "art-workbook" ]; then
 echo "hmm... you want the art workbook.."
 echo "here we go..."
 git clone http://cdcvs.fnal.gov/projects/art-workbook
-mv $PWD/art-workbook $PWD/study-area
-mv $PWD/study-area/art-workbook $PWD/study-area/src
-cd study-area
+mv $PWD/art-workbook $PWD/$name
+mv $PWD/$name/art-workbook $PWD/$name/src
+cd $name
 mkdir build
 touch build/CMakeCache.txt
 mkdir ext
@@ -153,7 +185,7 @@ SRC_DIR=`pwd`/src
 cat << EOF > setup.sh
 #!/usr/bin/env bash
 #Setup script for "$exp" with requested version and qualifiers (may default to current version)
-source ups/setup_for_development -d e7:s14
+source ups/setup_for_development -d 
 export BUILD_PATH="$BUILD_DIR"
 export SRC_PATH="$SRC_DIR"
 LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
@@ -177,35 +209,36 @@ else
 #cd study-area
 mkdir $name
 cd $name
-    echo -e "\nChecking for a build directory..."
+TOP=`pwd`
+    #echo -e "\nChecking for a build directory..."
         if [ -d build ]; then
             echo "build directory already exists"
             echo ""
         else
             mkdir build
             touch build/CMakeCache.txt
-            echo "made build directory"
-            echo ""
+            #echo "made build directory"
+            #echo ""
         fi
 
-    echo -e "Checking for an external  directory..."
+    #echo -e "Checking for an external  directory..."
         if [ -d ext ]; then
             echo "ext directory already exists"
             echo ""
         else
             mkdir ext
-            echo "made ext directory"
-            echo ""
+            #echo "made ext directory"
+            #echo ""
         fi
 
-    echo -e "Checking for a source  directory..."
+    #echo -e "Checking for a source  directory..."
         if [ -d src ]; then
             echo "source directory already exists"
             echo ""
         else
             mkdir src
-            echo "made src directory"
-            echo ""
+            #echo "made src directory"
+            #echo ""
         fi
 echo ""
 echo "    ++++++++++++++++++++++++++++++++++++++++++    "
@@ -219,9 +252,9 @@ echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 
 # === may need to change where this is done ===
 # === probably after the if switch for wkbk ===
-        BUILD_DIR=`pwd`/build
-        EXT_PATH=`pwd`/ext
-        SRC_DIR=`pwd`/src
+        BUILD_DIR=$TOP/build
+        EXT_PATH=$TOP/ext
+        SRC_DIR=$TOP/src
         #LIB_PATH=${INSTALL_PATH}/lib
         ##INC_PATH=${INSTALL_PATH}/include
         #BIN_PATH=${INSTALL_PATH}/bin
@@ -256,6 +289,7 @@ echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 if [ -z "$ver" ] && [ ! -z "$qual" ]; then
   ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
   echo "no version specified but qual specified..."
+  echo "default version used..."
   echo "setup $exp $ver -q $qual"
   echo ""
 fi
@@ -265,6 +299,7 @@ if [ -z "$qual" ] && [ ! -z "$ver" ]; then
   b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
   qual="${e}:${b}"
   echo "no qual specified but ver specified..."
+  echo "default qual used..."
   echo "setup $exp $ver -q $qual"
   echo ""
 fi
@@ -275,7 +310,9 @@ if [ -z "$ver" ] && [ -z "$qual"]; then
   b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
   qual="${e}:${b}"
   echo "no qual specified and no ver specified..."
-  echo "setup $exp $ver -q $qual"
+  echo "default qual and version used..."
+  #echo "setup $exp $ver -q $qual"
+  echo "$exp $ver -q $qual"
   echo ""
 fi
 
@@ -284,7 +321,7 @@ fi
 cat << EOF > setup.sh
 #!/usr/bin/env bash
 #Setup script for "$exp" with requested version and qualifiers (may default to current version)
-setup studio
+setup studio v0_02_00
 setup $exp $ver -q $qual
 export BUILD_PATH=$BUILD_DIR
 export SRC_PATH=$SRC_DIR
@@ -483,7 +520,8 @@ if( NOT build_dir_list STREQUAL "no args")
     message(STATUS "specified dirs are: ${build_dir_list}")
     #add each build dir
     foreach(build_dir ${build_dir_list})
-        add_subdirectory(src/${build_dir})
+        #add_subdirectory(src/${build_dir})
+        add_subdirectory($ENV{SRC_PATH]/${build_dir})
     endforeach(build_dir ${build_dir_list})
 #if no args passed
 elseif( build_dir_list STREQUAL "no args")
@@ -491,16 +529,13 @@ message(STATUS "no specified dirs...")
     #if outside srcs
     if(NOT in_src)
         message(STATUS "not in src dir... building everything...")
-        add_subdirectory(src)
+        add_subdirectory($ENV{SRC_PATH})
         #if in sources
     elseif(in_src)
         message(STATUS "somewhere in src... building current dir...")
         add_subdirectory(${work_dir})
     endif(NOT in_src)
 endif( NOT build_dir_list STREQUAL "no args")
-
-#add_executable(Test src/test.cc)
-#target_link_libraries(Test fhiclcpp)
 EOF
 
 cat << 'EOF' > src/CMakeLists.txt
