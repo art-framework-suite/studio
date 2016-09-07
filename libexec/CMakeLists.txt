@@ -25,6 +25,7 @@ install(PROGRAMS studio-sh-shell
 		 studio-example
 		 studio-create
 		 studio-clean
+ 		 studio-liblist
 
         DESTINATION "${product}/${version}/libexec")
 #cet_install_files( DIRNAME libexec 

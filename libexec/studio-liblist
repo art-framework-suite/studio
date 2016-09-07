@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Usage: studio liblist  
+# Summary: Prints out the CMake variable names for linking libraries and the corresponding path
+#  	   being fed to CMake. 
+# Help: studio liblist is here to help you find the library CMake variable names
+
+if [ -z $SRC_PATH ]; then
+  echo "Please source setup script"
+  exit 1
+fi
+
+if [ -f library-list.txt ]; then
+  echo "Libary list already exists."
+  exit 1
+else
+  echo "writing cmake lib list table for a given ups product"
+  touch library-list.txt
+  active_prods=`ups active | grep -v "Active ups products:" | cut -d " " -f 1 | tr '[a-z]' '[A-Z]' | tr '\n' ';'`
+  trimmed_prods=${active_prods::${#active_prods}-1}
+  #echo "$trimmed_prods"
+  declare -A prod_map
+  #prod_map=([""]="")
+  IFS=';' read -r -a dirs_list <<< "$trimmed_prods"
+  for prod in "${dirs_list[@]}"
+  do
+    #echo "pre-check"
+    #echo "$prod"
+    #eval echo "$prod" 
+    lib=$(eval echo "\${${prod}_LIB}")
+    #echo "$lib"
+    if [ -z ${lib} ]; then 
+     continue 
+    else
+      #echo "-$prod-"
+      #echo "-$lib-"
+      #eval echo "\$$prod"
+      prod_map["$prod"]=$lib
+      #prod_map+=(["${prod}"]="${lib}")
+    fi
+  done
+  
+  
+  for prod_key in ${!prod_map[@]}
+  do
+    shopt -s nullglob
+    #echo "new prod"
+    echo "product: $prod_key" >> library-list.txt
+    so_files=$(eval echo "${prod_map[$prod_key]}/*.so")
+    IFS=' ' read -r -a so_list <<< "$so_files"
+    #echo "map value: ${prod_map[$prod_key]}"
+    if [ ${#so_list[@]} -eq 0 ]; then
+      #echo "empty array?"
+      #echo ""
+      continue
+    else
+      for so in "${so_list[@]}"
+      do 
+        #echo "$so"
+        so_name=$(echo "$so" | sed "s/^\/.*lib\(.*\)\\.so$/\\1/g")
+        echo "library name: $so_name ; library path: $so" >> library-list.txt 
+      done
+      echo "" >> library-list.txt
+    fi
+  done
+fi  
