@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 
-# Usage: studio example <MANDATORY> [OPTION] <OPTIONAL> [name]  
-# Summary: Gets you a minimally-required-to-build example <plug-in> 
-#	   along with a fcl file to go with it...
+# Usage: studio example <MANDATORY> [OPTION] <OPTIONAL> [name]
+# Summary: Gets you a minimally-required-to-build example <plug-in>
+#          along with a fcl file to go with it...
 #          studio example <...> will also appropriately update your source
-#	   directory CMakeLists.txt file to link this library. NOTE: if you
-#	   should decide to remove this source file... then you must update 
-#	   your CMakeLists file or else you cannot build... 
+#          directory CMakeLists.txt file to link this library. NOTE: if you
+#          should decide to remove this source file... then you must update
+#          your CMakeLists file or else you cannot build...
 # Help: studio example is here to get you template plugins/fcl files/and help with CMake
 #     -a        analyzer
 #     -s        service
 #     -so       source
 #     -p        producer
-#     -f        filter   
-#    
+#     -f        filter
+#
 #
 #     studio example -a myAnalyzer
 #     OUTPUT:
 #		myAnalyzer_module.cc
 #		myAnalyzer.fcl
-#       	CMakeLists.txt 
+#               CMakeLists.txt
 #               <...    add_library(myAnalyzer_module SHARED myAnalyzer_module.cc)
-#       		target_link_libraries(myAnalyzer ${module_lib_list} ... >
+#                       target_link_libraries(myAnalyzer ${module_lib_list} ... >
 
 if [ -z $SRC_PATH ]; then
   echo "Please source setup script"
@@ -30,39 +30,38 @@ fi
 
 skeltag=""
 ep=""
-ep=""
 #checking for empty call
 if [ -z "$1" ]; then
 echo "Please pass arguments..."
 exit 2
 fi
 
-case "$1" in 
+case "$1" in
     "-a")
-        skeltag="analyzer" 
-	ep="a1";;
+        skeltag="analyzer"
+        ep="a1";;
     "-s")
-	skeltag="service" 
-	ep="s1";;
+        skeltag="service"
+        ep="s1";;
     "-so")
-	skeltag="sources" 
-	ep="s1";;
+        skeltag="source"
+        ep="s1";;
     "-p")
-	skeltag="producer" 
-	ep="p1";;
+        skeltag="producer"
+        ep="p1";;
     "-f")
-	skeltag="filter" 
-	ep="f1";;
-    *) 
-	echo "Flag not recognized, please check options"
-	exit 1 ;;
+        skeltag="filter"
+        ep="f1";;
+    *)
+        echo "Flag not recognized, please check options"
+        exit 1 ;;
 esac
 if [ -z $2 ]; then
 name="my"
 else
 name="$2"
 fi
-cd "$SRC_PATH" 
+cd "$SRC_PATH"
 echo "$SRC_PATH"
 cetskelgen "$skeltag" "$name"
 
@@ -70,26 +69,23 @@ cetskelgen "$skeltag" "$name"
 # == cmake ==
 # ===========
 if [ "$skeltag" == "analyzer" -o "$skeltag" == "filter" -o "$skeltag" == producer ]; then
-	tag="module"
+        tag="module"
 fi
 if [ "$skeltag" == "service" ]; then
-	tag="service"
+        tag="service"
 fi
 if [ "$skeltag" == "source" ]; then
-	tag="source"
+        tag="source"
 fi
 targ_name="$name"_"$tag"
 src_name=""$targ_name".cc"
 liblist="\${${tag}_lib_list}"
-#echo "$targ_name"
-#echo "$src_name"
-#echo "$liblist"
 
 cat << EOT >> $SRC_PATH/CMakeLists.txt
 
 #"$name" lib linking
 add_library($targ_name SHARED $src_name)
-target_link_libraries($targ_name $liblist) 
+target_link_libraries($targ_name $liblist)
 
 EOT
 
@@ -99,11 +95,11 @@ cat << EOT >> $SRC_PATH/"$targ_name".fcl
 #bare bones fcl test
 
 physics:{
-	analyzers:{
-		"$ep":{
-			module_type: "$name"
-		}
-	}
-	e1:["$ep"]
+   ${skeltag}s:{
+      $ep:{
+         module_type: "$name"
+      }
+   }
+   p:["$ep"]
 }
 EOT
