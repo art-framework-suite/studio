@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 
-# Usage: studio example <MANDATORY> [OPTION] <OPTIONAL> [name]
-# Summary: Gets you a minimally-required-to-build example <plug-in>
-#          along with a fcl file to go with it...
-#          studio example <...> will also appropriately update your source
-#          directory CMakeLists.txt file to link this library. NOTE: if you
-#          should decide to remove this source file... then you must update
-#          your CMakeLists file or else you cannot build...
-# Help: studio example is here to get you template plugins/fcl files/and help with CMake
+# Usage: studio example <-a | -s | -S | -p | -f>  name
+# Summary: Writes a skeleton example plugin along with a FHiCL file to
+#          configure it.
+#
+#          'studio example' will also appropriately update your source
+#          directory CMakeLists.txt file to compile and link your plugin
+#          library.
+#
+#          NOTE: if you should decide to remove the generated source file,
+#          you must edit the CMakeLists.txt to remove the build commands
+#          related to it.
+#
+# Help: studio example is here to get you template plugins/fcl files/and help 
+#       with CMake
 #     -a        analyzer
 #     -s        service
-#     -so       source
+#     -S        source
 #     -p        producer
 #     -f        filter
 #
@@ -43,7 +49,7 @@ case "$1" in
     "-s")
         skeltag="service"
         ep="s1";;
-    "-so")
+    "-S")
         skeltag="source"
         ep="s1";;
     "-p")
@@ -103,3 +109,6 @@ physics:{
    p:["$ep"]
 }
 EOT
+
+echo "Your skeleton source file has been written."
+echo "To build it now, use 'studio build'."
