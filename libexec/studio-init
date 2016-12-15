@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+ 
+# init is not a command for the user.
+# This scriptlet support command-line completion for studio's
+# subcommands.
 set -e
 
 print=""
