@@ -21,7 +21,6 @@ include(CetCMakeEnv)
 cet_cmake_env(noarch)
 
 # source code
-add_subdirectory(bin)
 add_subdirectory(libexec)
 add_subdirectory(completions)
 add_subdirectory(ups)
