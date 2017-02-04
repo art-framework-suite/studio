@@ -145,7 +145,6 @@ if [ "$7" == "-n" ]; then
     name=$8
 fi
 
-
 # dummy catchers
 if [ -z "$exp" ] && [ -z "$rep" ]; then
     echo "Please specificy a UPS product name."
@@ -216,17 +215,6 @@ if [ "$rep" == "art-workbook" ]; then
     BUILD_DIR=`pwd`/build
     EXT_PATH=`pwd`/ext
     SRC_DIR=`pwd`/src
-#LIB_PATH=${INSTALL_PATH}/lib
-#INC_PATH=${INSTALL_PATH}/include
-#BIN_PATH=${INSTALL_PATH}/bin
-#
-#if [ -z "$LD_LIBRARY_PATH" ]
-#then
-# export LD_LIBRARY_PATH=$LIB_PATH
-#else
-# export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_PATH
-#fi
-#PATH=${PATH}:${BIN_PATH}
     cat << EOF > setup.sh
 #!/usr/bin/env bash
 #Setup script for "$exp" with requested version and qualifiers (may default to current version)
@@ -239,6 +227,7 @@ EOF
 echo "$PWD"
 
 echo ""
+echo "this is the first blob"
 echo "    ++++++++++++++++++++++++++++++++++++++++++    "
 echo "    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    "
 echo "    ========== study area created! ===========    "
@@ -250,76 +239,34 @@ echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
 else
 
 #NORMAL DIRECTORY TREE
-#mkdir study-area
-#cd study-area
-    mkdir $name
-    cd $name
-    TOP=`pwd`
-    #echo -e "\nChecking for a build directory..."
-    if [ -d build ]; then
-        echo "build directory already exists"
-        echo ""
-    else
-        mkdir build
-        touch build/CMakeCache.txt
-            #echo "made build directory"
-            #echo ""
+    if [ -d "$name" ]; then
+	echo "The directory ${name} already exists, please remove it or specify a different name"
+	exit 1
     fi
 
-    #echo -e "Checking for an external  directory..."
-    if [ -d ext ]; then
-        echo "ext directory already exists"
-        echo ""
-    else
-        mkdir ext
-            #echo "made ext directory"
-            #echo ""
-    fi
+    mkdir -p "$name" || ( echo "Failed to create directory ${name}" ; exit 1)
+    cd "$name"
+    TOP=${PWD}
+    mkdir build
+    touch build/CMakeCache.txt
+    mkdir ext
+    mkdir src
 
-    #echo -e "Checking for a source  directory..."
-    if [ -d src ]; then
-        echo "source directory already exists"
-        echo ""
-    else
-        mkdir src
-            #echo "made src directory"
-            #echo ""
-    fi
     echo ""
-    echo "    ++++++++++++++++++++++++++++++++++++++++++    "
-    echo "    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    "
-    echo "    ========== study area created! ===========    "
-    echo "    === source setup every time you login! ===    "
-    echo "    === studio help or studio help command ===    "
-    echo "    ========== for more details!   ===========    "
-    echo "    ++++++++++++++++++++++++++++++++++++++++++    "
-    echo "    -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    "
+    echo "The directory '${name}' has been created."
+    echo "Remember to source '${name}/setup.sh' in each new shell"
+    echo "Use 'studio help' for more details."
+    echo ""
 
 # === may need to change where this is done ===
 # === probably after the if switch for wkbk ===
     BUILD_DIR=$TOP/build
     EXT_PATH=$TOP/ext
     SRC_DIR=$TOP/src
-        #LIB_PATH=${INSTALL_PATH}/lib
-        ##INC_PATH=${INSTALL_PATH}/include
-        #BIN_PATH=${INSTALL_PATH}/bin
-        ##
-        #if [ -z "$LD_LIBRARY_PATH" ]
-        #then
-        # export LD_LIBRARY_PATH=$LIB_PATH
-        #else
-        # export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_PATH
-        #fi
-        ##
-        #PATH=${PATH}:${BIN_PATH}
-        ##
-
-
 
 #=========================================================================================================
 #==============================================MAKING=====================================================
 #===========================================SETUP SCRIPT==================================================
-#=========================================================================================================
 #=========================================================================================================
 
 # ----------------------------------------------
@@ -356,7 +303,6 @@ else
 	qual="${e}:${b}"
 	echo "no qual specified and no ver specified..."
 	echo "default qual and version used..."
-  #echo "setup $exp $ver -q $qual"
 	echo "$exp $ver -q $qual"
 	echo ""
     fi
@@ -377,7 +323,6 @@ EOF
 # <<<<<<<<<<<<<<< ending the check for artworkbook
 fi
 # >>>>>>>>>>>>>>> ending the check for artworkbook
-
 
 #=========================================================================================================
 #==============================================CMAKE======================================================
@@ -427,11 +372,7 @@ if(prod STREQUAL "")
 
     endmacro()
 
-
 #========================
-#========================
-#========================
-
 
 #here is where we find the lib directories
     macro(find_lib_dirs)
@@ -440,7 +381,6 @@ if(prod STREQUAL "")
     string(LENGTH ${dirs} string_length)
     string(SUBSTRING ${dirs} 0 ${string_length}-2 dirs_trimmed)
     string(REPLACE "\n" ";" dirs_list ${dirs_trimmed})
-
 
     set(lib_dirs_list)
     set(lib_prod_list)
