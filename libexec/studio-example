@@ -26,11 +26,9 @@
 #		myAnalyzer_module.cc
 #		myAnalyzer.fcl
 #               CMakeLists.txt
-#               <...    add_library(myAnalyzer_module SHARED myAnalyzer_module.cc)
-#                       target_link_libraries(myAnalyzer ${module_lib_list} ... >
 
 if [ -z $SRC_PATH ]; then
-  echo "Please source setup script"
+  echo "Please source the setup script"
   exit 1
 fi
 
@@ -38,7 +36,8 @@ skeltag=""
 ep=""
 #checking for empty call
 if [ -z "$1" ]; then
-echo "Please pass arguments..."
+echo "'studio example' requires specification of a plugin type."
+echo "Please try 'studio help example'"
 exit 2
 fi
 
@@ -63,7 +62,8 @@ case "$1" in
         exit 1 ;;
 esac
 if [ -z $2 ]; then
-name="my"
+echo "Please specify a name for the plugin to be generated."
+echo "Please try 'studio help example'"
 else
 name="$2"
 fi
