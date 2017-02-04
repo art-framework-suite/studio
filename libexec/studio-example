@@ -27,7 +27,7 @@
 #		myAnalyzer.fcl
 #               CMakeLists.txt
 
-if [ -z $SRC_PATH ]; then
+if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source the setup script"
   exit 1
 fi
@@ -67,8 +67,8 @@ echo "Please try 'studio help example'"
 else
 name="$2"
 fi
-cd "$SRC_PATH"
-echo "$SRC_PATH"
+cd "$STUDIO_PROJECT_SRC_PATH"
+echo "$STUDIO_PROJECT_SRC_PATH"
 cetskelgen "$skeltag" "$name"
 
 # ===========
@@ -87,7 +87,7 @@ targ_name="$name"_"$tag"
 src_name=""$targ_name".cc"
 liblist="\${${tag}_lib_list}"
 
-cat << EOT >> $SRC_PATH/CMakeLists.txt
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
 
 #"$name" lib linking
 add_library($targ_name SHARED $src_name)
@@ -95,8 +95,8 @@ target_link_libraries($targ_name $liblist)
 
 EOT
 
-touch $SRC_PATH/"$targ_name".fcl
-cat << EOT >> $SRC_PATH/"$targ_name".fcl
+touch $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
 #"$targ_name".fcl
 #bare bones fcl test
 

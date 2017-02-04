@@ -5,7 +5,7 @@
 #  	   being fed to CMake. 
 # Help: studio liblist is here to help you find the library CMake variable names
 
-if [ -z $SRC_PATH ]; then
+if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source setup script"
   exit 1
 fi

@@ -4,10 +4,10 @@
 # Summary: Cleans build directory. 
 # Help: studio clean is here to clean builddir
 
-if [ -z $BUILD_PATH ]; then
+if [ -z $STUDIO_PROJECT_BUILD_PATH ]; then
   echo "Please source setup script"
   exit 1
 fi
 
-cd $BUILD_PATH
+cd $STUDIO_PROJECT_BUILD_PATH
 rm -rf *

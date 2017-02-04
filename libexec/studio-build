@@ -16,7 +16,7 @@ echo ""
 
 # checking for setup run
 
-if [ -z $BUILD_PATH ]; then
+if [ -z $STUDIO_PROJECT_BUILD_PATH ]; then
   echo "Please source setup script"
   exit 1
 fi
@@ -34,7 +34,7 @@ if [ -z $1 ]; then
   echo "You have not specified to build specific directories..."
   echo "Checking where you are..."
   #checking if not in source
-  insrc=`echo $PWD | grep $SRC_PATH`
+  insrc=`echo $PWD | grep $STUDIO_PROJECT_SRC_PATH`
   if [ -z $insrc ]; then
     echo ""
     echo ""
@@ -47,7 +47,7 @@ if [ -z $1 ]; then
     #working_dir="/home/rbouabid/studio/studio/libexec/src"
     working_dir="$PWD"
     build_dirs="no args"
-    #cmake -D IS_IN_SOURCE:BOOL=FALSE -D WORKING_DIR:STRING=$SRC_PATH -D BUILD_DIRS:STRING="no args" /home/rbouabid/studio/studio/libexec/CMakeLists.txt
+    #cmake -D IS_IN_SOURCE:BOOL=FALSE -D WORKING_DIR:STRING=$STUDIO_PROJECT_SRC_PATH -D BUILD_DIRS:STRING="no args" /home/rbouabid/studio/studio/libexec/CMakeLists.txt
   else
     echo ""
     echo ""
@@ -81,8 +81,8 @@ else
   # ------- ---- --------
 fi
 
-if [ "$PWD" != "$BUILD_PATH" ]; then
-    cd $BUILD_PATH 
+if [ "$PWD" != "$STUDIO_PROJECT_BUILD_PATH" ]; then
+    cd $STUDIO_PROJECT_BUILD_PATH 
     echo "getting you to build directory..."
 fi
 
@@ -98,5 +98,5 @@ echo "build_dirs = $build_dirs"
 echo "pwd = $PWD"
 #some debug stuff
 
-cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $BUILD_PATH ..
+cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $STUDIO_PROJECT_BUILD_PATH ..
 make 

@@ -219,8 +219,8 @@ if [ "$rep" == "art-workbook" ]; then
 #!/usr/bin/env bash
 #Setup script for "$exp" with requested version and qualifiers (may default to current version)
 source ups/setup_for_development -d 
-export BUILD_PATH="$BUILD_DIR"
-export SRC_PATH="$SRC_DIR"
+export STUDIO_PROJECT_BUILD_PATH="$BUILD_DIR"
+export STUDIO_PROJECT_SRC_PATH="$SRC_DIR"
 LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
 EOF
 #temp fix for studio not being an installed prod?
@@ -315,8 +315,8 @@ else
 # TODO: avoid hard-coding the studio version here
 setup studio v0_03_00
 setup $exp $ver -q $qual
-export BUILD_PATH=$BUILD_DIR
-export SRC_PATH=$SRC_DIR
+export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
+export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
 LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
 EOF
 
@@ -409,8 +409,8 @@ cmake_minimum_required(VERSION 2.8.9)
 project(study_area)
 set(CMAKE_CXX_FLAGS "-std=c++14")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-#message(STATUS "build path: $ENV{BUILD_PATH}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "$ENV{BUILD_PATH}/lib")
+#message(STATUS "build path: $ENV{STUDIO_PROJECT_BUILD_PATH}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "$ENV{STUDIO_PROJECT_BUILD_PATH}/lib")
 
 #reading in cmake cache variables from build script
 set(in_src ${IS_IN_SRC})
@@ -507,7 +507,7 @@ if( NOT build_dir_list STREQUAL "no args")
     #add each build dir
     foreach(build_dir ${build_dir_list})
         #add_subdirectory(src/${build_dir})
-        add_subdirectory($ENV{SRC_PATH]/${build_dir})
+        add_subdirectory($ENV{STUDIO_PROJECT_SRC_PATH]/${build_dir})
     endforeach(build_dir ${build_dir_list})
 #if no args passed
 elseif( build_dir_list STREQUAL "no args")
@@ -515,7 +515,7 @@ message(STATUS "no specified dirs...")
     #if outside srcs
     if(NOT in_src)
         message(STATUS "not in src dir... building everything...")
-        add_subdirectory($ENV{SRC_PATH})
+        add_subdirectory($ENV{STUDIO_PROJECT_SRC_PATH})
         #if in sources
     elseif(in_src)
         message(STATUS "somewhere in src... building current dir...")
