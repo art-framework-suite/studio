@@ -1,33 +1,27 @@
 #!/usr/bin/env bash
-
-# Usage: studio build <OPTIONAL> SRC_DIR_NAME ... <OPTIONAL> SRC_DIRNAME 
-# Summary: studio build is primarily here to build your code. 
-#          Behind the scenes most of this is calling cmake, but there's a little more going on than that.
-#	   If you pass build specific subdirectories than only those will get built. If you 
-#	   are IN a source subdirectory then only that subdirectory will get built. Yes, studio
-#	   does still use an out of source build, you just don't have to flip back and forth. 
-#          studio with do it for you! 
-# Help: the build command
-# 	no options here... just call studio build if you want your entire src directory built
-#	or call studio build dir1 ... dirN if you want them all built.
+# Usage: studio build [ src-dir-name [ ... src-dir-name ]] 
+# Summary: compile and link (build) code
+# Help: This command compiles and links your code.  Behind the scenes
+# most of this is calling CMake or make, but there's a little
+# more going on than that.
+#
+# If you pass specific subdirectories, then only the code in those
+# directories will be compiled.  If you are in a source subdirectory,
+# then only that subdirectory will get built. Yes, studio does use an
+# "out of source" build; you just don't have to flip back and forth
+# between "source" and "build" directories; studio will do it for you.
+#
 
 echo ""
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
-# += checking for setup run +=
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+# checking for setup run
 
 if [ -z $BUILD_PATH ]; then
   echo "Please source setup script"
   exit 1
 fi
 
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
-# += checking for dir paths +=
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
-# =+=+=+=+=+=+=+=+=+=+=+=+=+=+
+# checking for dir paths
 
 #some variables I want
 in_source=true
@@ -36,7 +30,6 @@ build_dirs="no args"
 
 #checking if args are read in
 if [ -z $1 ]; then
-  echo ""
   echo ""
   echo "You have not specified to build specific directories..."
   echo "Checking where you are..."
