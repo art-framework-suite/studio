@@ -34,6 +34,7 @@
 #
 # ├── build
 # │   └── CMakeCache.txt
+# ├── CMakeLists.txt
 # ├── ext
 # ├── helpers.cmake
 # ├── setup.sh
@@ -43,6 +44,11 @@
 # The 'build' directory is where compiler and linker output will be
 # put. The CMakeCache.txt file in this directory is generated and
 # updated by CMake, and should not be edited.
+#
+# The (top-level) CMakeLists.txt contains a great deal of boilerplate
+# needed by the CMake build system. It should not require any
+# modification. Only edit it if you are a CMake expert, and even in
+# that case be careful that your changes are only additions.
 #
 # The 'ext' directory is a place for you to build any external
 # libraries your code will need. If you want to try linking to some
