@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 
 # Usage: studio liblist  
-# Summary: Prints out the CMake variable names for linking libraries and the corresponding path
-#  	   being fed to CMake. 
-# Help: studio liblist is here to help you find the library CMake variable names
+# Summary: Enumerate all libraries available in the project environment.
+
+# Help: Prints out information about all libraries available in all
+# the UPS products set up for this project area. For each library,
+# both the CMake variable to be used for library linking and the path
+# to that library are given.
+#
+# All information is written to a file named library-list.txt.
 
 if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source setup script"
   exit 1
 fi
-
-if [ -f library-list.txt ]; then
-  echo "Libary list already exists."
+OUTFILE="library-list.txt"
+if [ -f $OUTFILE ]; then
+  echo "Library list file $OUTFILE already exists."
+  echo "Please delete it and re-run liblist if you wish to regenerate it."
   exit 1
 else
-  echo "writing cmake lib list table for a given ups product"
-  touch library-list.txt
-  active_prods=`ups active | grep -v "Active ups products:" | cut -d " " -f 1 | tr '[a-z]' '[A-Z]' | tr '\n' ';'`
+  echo "Writing $OUTFILE"
+  touch $OUTFILE
+  active_prods=$(ups active | grep -v "Active ups products:" | cut -d " " -f 1 | tr '[a-z]' '[A-Z]' | tr '\n' ';')
   trimmed_prods=${active_prods::${#active_prods}-1}
   #echo "$trimmed_prods"
   declare -A prod_map
@@ -24,8 +30,8 @@ else
   IFS=';' read -r -a dirs_list <<< "$trimmed_prods"
   for prod in "${dirs_list[@]}"
   do
-    #echo "pre-check"
-    #echo "$prod"
+    echo "pre-check"
+    echo "$prod"
     #eval echo "$prod" 
     lib=$(eval echo "\${${prod}_LIB}")
     #echo "$lib"
