@@ -353,7 +353,7 @@ endmacro(insert_into_map)
 macro(find_inc_dirs)
 
 #getting ups product names
-execute_process(COMMAND ups active COMMAND grep -v "Active UPS products:" COMMAND cut -d " " -f 1 COMMAND tr '[a-z]' '[A-Z]' OUTPUT_VARIABLE dirs)
+execute_process(COMMAND ups active COMMAND grep -v "Active ups products:" COMMAND cut -d " " -f 1 COMMAND tr '[a-z]' '[A-Z]' OUTPUT_VARIABLE dirs)
 #trimming the end
 string(LENGTH ${dirs} string_length)
 string(SUBSTRING ${dirs} 0 ${string_length}-2 dirs_trimmed)
@@ -400,7 +400,7 @@ if(prod STREQUAL "")
 #message(STATUS "${lib_dirs_list}")
 
 	    endmacro()
-	    EOF
+EOF
 
 cat << 'EOF' > CMakeLists.txt
 #CMakeLists for "$exp" with specific directory tree
