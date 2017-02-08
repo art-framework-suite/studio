@@ -414,7 +414,13 @@ include(helpers.cmake)
 cmake_minimum_required(VERSION 2.8.9)
 project(study_area)
 set(CMAKE_CXX_FLAGS "-std=c++14")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined,error")
+else()
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+endif()
+
 #message(STATUS "build path: $ENV{STUDIO_PROJECT_BUILD_PATH}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "$ENV{STUDIO_PROJECT_BUILD_PATH}/lib")
 
