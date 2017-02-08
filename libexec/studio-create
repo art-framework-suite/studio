@@ -227,13 +227,17 @@ if [ "$rep" == "art-workbook" ]; then
 source ups/setup_for_development -d 
 export STUDIO_PROJECT_BUILD_PATH="$BUILD_DIR"
 export STUDIO_PROJECT_SRC_PATH="$SRC_DIR"
-LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
+os_name=$(uname -s)
+if [ \$os_name = "Darwin" ]; then
+  DYLD_LIBRARY_PATH=$BUILD_DIR/lib:\$DYLD_LIBRARY_PATH
+else
+  LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
+fi
 EOF
 #temp fix for studio not being an installed prod?
 echo "$PWD"
 
 echo ""
-echo "this is the first blob"
 echo "    ++++++++++++++++++++++++++++++++++++++++++    "
 echo "    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-    "
 echo "    ========== study area created! ===========    "
@@ -246,8 +250,8 @@ else
 
 #NORMAL DIRECTORY TREE
     if [ -d "$name" ]; then
-	echo "The directory ${name} already exists, please remove it or specify a different name"
-	exit 1
+        echo "The directory ${name} already exists, please remove it or specify a different name"
+        exit 1
     fi
 
     mkdir -p "$name" || ( echo "Failed to create directory ${name}" ; exit 1)
@@ -285,32 +289,32 @@ else
 
 #no version specified but qual specified
     if [ -z "$ver" ] && [ ! -z "$qual" ]; then
-	ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
-	echo "no version specified but qual specified..."
-	echo "default version used..."
-	echo "setup $exp $ver -q $qual"
-	echo ""
-	fi
+        ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
+        echo "no version specified but qual specified..."
+        echo "default version used..."
+        echo "setup $exp $ver -q $qual"
+        echo ""
+        fi
 #no qual specified but version specified
-	if [ -z "$qual" ] && [ ! -z "$ver" ]; then
-	    e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
-	b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
-	    qual="${e}:${b}"
-	    echo "no qual specified but ver specified..."
-	    echo "default qual used..."
-	    echo "setup $exp $ver -q $qual"
-	    echo ""
-	fi
+        if [ -z "$qual" ] && [ ! -z "$ver" ]; then
+            e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
+        b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
+            qual="${e}:${b}"
+            echo "no qual specified but ver specified..."
+            echo "default qual used..."
+            echo "setup $exp $ver -q $qual"
+            echo ""
+        fi
 #no version and no qual specified?
-	if [ -z "$ver" ] && [ -z "$qual"]; then
-	    ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
-	e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
-	    b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
-	qual="${e}:${b}"
-	echo "no qual specified and no ver specified..."
-	echo "default qual and version used..."
-	echo "$exp $ver -q $qual"
-	echo ""
+        if [ -z "$ver" ] && [ -z "$qual"]; then
+            ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
+        e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
+            b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
+        qual="${e}:${b}"
+        echo "no qual specified and no ver specified..."
+        echo "default qual and version used..."
+        echo "$exp $ver -q $qual"
+        echo ""
     fi
 
 # writing the setup script
@@ -323,7 +327,12 @@ setup studio v0_03_00
 setup $exp $ver -q $qual
 export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
 export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
-LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
+os_name=$(uname -s)
+if [ \$os_name = "Darwin" ]; then
+  DYLD_LIBRARY_PATH=$BUILD_DIR/lib:\$DYLD_LIBRARY_PATH
+else
+  LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
+fi
 EOF
 
 # <<<<<<<<<<<<<<< ending the check for artworkbook
@@ -394,18 +403,18 @@ if(prod STREQUAL "")
 #message(STATUS "test ${prod}")
 #message(STATUS "var $ENV{${prod}_LIB}")
     if(prod STREQUAL "")
-	continue()
-	endif(prod STREQUAL "")
-	if(IS_DIRECTORY $ENV{${prod}_LIB})
+        continue()
+        endif(prod STREQUAL "")
+        if(IS_DIRECTORY $ENV{${prod}_LIB})
 #message(STATUS "$ENV{${prod}_LIB}")
-	    list(APPEND lib_prod_list ${prod})
-	    list(APPEND lib_dirs_list $ENV{${prod}_LIB})
-	    insert_into_map(${prod} $ENV{${prod}_LIB})
-	    endif(IS_DIRECTORY $ENV{${prod}_LIB})
-	    endforeach(prod)
+            list(APPEND lib_prod_list ${prod})
+            list(APPEND lib_dirs_list $ENV{${prod}_LIB})
+            insert_into_map(${prod} $ENV{${prod}_LIB})
+            endif(IS_DIRECTORY $ENV{${prod}_LIB})
+            endforeach(prod)
 #message(STATUS "${lib_dirs_list}")
 
-	    endmacro()
+            endmacro()
 EOF
 
 cat << 'EOF' > CMakeLists.txt
