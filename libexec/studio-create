@@ -70,7 +70,7 @@
 # 
 # EXAMPLES
 #    studio create -e lariatsoft -v v06_03_00 -q e10:prof
-#    studio create -e dunetpc -v 06_18_01
+#    studio create -e dunetpc -v v06_18_01
 #    studio create -e uboonecode
 #
 set -e
