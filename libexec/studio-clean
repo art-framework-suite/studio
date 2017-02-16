@@ -2,12 +2,19 @@
 
 # Usage: studio clean   
 # Summary: Cleans build directory. 
-# Help: studio clean is here to clean builddir
+# Help: studio clean removes the contents of the build directory.
 
 if [ -z $STUDIO_PROJECT_BUILD_PATH ]; then
-  echo "Please source setup script"
+  echo "STUDIO_PROJECT_BUILD_PATH is not set."
+  echo "Please source study area setup script."
   exit 1
+else
+  if [ ! "X$STUDIO_PROJECT_BUILD_PATH" = "X" ]; then 
+    echo "Cleaning build directory."
+    echo "rm -rf  $STUDIO_PROJECT_BUILD_PATH/*"
+    rm -rf $STUDIO_PROJECT_BUILD_PATH/*
+  else
+    echo "STUDIO_PROJECT_BUILD_PATH is set but empty."
+    echo "Will not rm -rf /* !"
+  fi
 fi
-
-cd $STUDIO_PROJECT_BUILD_PATH
-rm -rf *
