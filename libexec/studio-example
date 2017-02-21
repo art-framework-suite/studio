@@ -16,7 +16,6 @@
 #       with CMake
 #     -a        analyzer
 #     -s        service
-#     -S        source
 #     -p        producer
 #     -f        filter
 #
@@ -48,9 +47,6 @@ case "$1" in
     "-s")
         skeltag="service"
         ep="s1";;
-    "-S")
-        skeltag="source"
-        ep="s1";;
     "-p")
         skeltag="producer"
         ep="p1";;
@@ -69,6 +65,7 @@ name="$2"
 fi
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
+
 cetskelgen "$skeltag" "$name"
 
 # ===========
@@ -79,9 +76,6 @@ if [ "$skeltag" == "analyzer" -o "$skeltag" == "filter" -o "$skeltag" == produce
 fi
 if [ "$skeltag" == "service" ]; then
         tag="service"
-fi
-if [ "$skeltag" == "source" ]; then
-        tag="source"
 fi
 targ_name="$name"_"$tag"
 src_name=""$targ_name".cc"
