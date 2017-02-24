@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Usage: studio example <-a | -s | -S | -p | -f>  name
+# Usage: studio example <-a | -s | -p | -f>  name
 # Summary: Writes a skeleton example plugin along with a FHiCL file to
 #          configure it.
 #
@@ -66,7 +66,10 @@ fi
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
 
-cetskelgen "$skeltag" "$name"
+if ( !  cetskelgen "$skeltag" "$name" ) ; then 
+  echo cetskelgen "$skeltag" "$name" failed
+  exit 2
+fi
 
 # ===========
 # == cmake ==

@@ -70,18 +70,19 @@
 # 
 # EXAMPLES
 #    studio create -e lariatsoft -v v06_03_00 -q e10:prof
+#    studio create -e lariatsoft -v v06_03_00 -q e10:prof -n lariatsoft_study
 #    studio create -e dunetpc -v v06_18_01
+#    studio create -e dunetpc -v v06_18_01 -n duntpc_study
 #    studio create -e uboonecode
+#    studio create -e uboonecode -n uboone_study
 #
 set -e
 #=========================================READING IN ARGUMENTS============================================
 
-echo "Welcome to studio!"
-echo ""
-
 #checking for empty call
 if [ -z "$1" ]; then
-    echo "Please pass arguments..."
+    echo "'studio create' requires specification of a UPS package."
+    echo "Please try 'studio help create'"
     exit 2
 fi
 
@@ -153,7 +154,7 @@ fi
 
 # dummy catchers
 if [ -z "$exp" ] && [ -z "$rep" ]; then
-    echo "Please specificy a UPS product name."
+    echo "Please specify a UPS product name."
     exit
 fi
 
@@ -289,28 +290,24 @@ else
 
 #no version specified but qual specified
     if [ -z "$ver" ] && [ ! -z "$qual" ]; then
-        ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
+        ver=$(ups list -aK+ "$exp" | grep $qual | sort | tail -1 | awk '{print $2}'| sed -e's/"//g')
         echo "no version specified but qual specified..."
-        echo "default version used..."
+        echo "latest version used..."
         echo "setup $exp $ver -q $qual"
         echo ""
-        fi
+    fi
 #no qual specified but version specified
-        if [ -z "$qual" ] && [ ! -z "$ver" ]; then
-            e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
-        b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
-            qual="${e}:${b}"
-            echo "no qual specified but ver specified..."
-            echo "default qual used..."
-            echo "setup $exp $ver -q $qual"
-            echo ""
-        fi
+    if [ -z "$qual" ] && [ ! -z "$ver" ]; then
+        qual=$(ups list -aK+ $exp | grep $ver | sort | tail -1 | awk '{print $4}'| sed -e's/"//g')
+        echo "no qual specified but ver specified..."
+        echo "latest qual used..."
+        echo "setup $exp $ver -q $qual"
+        echo ""
+    fi
 #no version and no qual specified?
-        if [ -z "$ver" ] && [ -z "$qual"]; then
-            ver="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 2 | cut -d '"' -f 2)"
-        e="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 1)"
-            b="$(ups list -aK+ "$exp" | sort | tail -1 | cut -d ' ' -f 4 | cut -d '"' -f 2 | cut -d ":" -f 2)"
-        qual="${e}:${b}"
+    if [ -z "$ver" ] && [ -z "$qual"]; then
+        ver=$(ups list -aK+ "$exp" | sort | tail -1 | awk '{print $2}'| sed -e's/"//g')
+        qual=$(ups list -aK+ $exp | sort | tail -1 | awk '{print $4}'| sed -e's/"//g')
         echo "no qual specified and no ver specified..."
         echo "default qual and version used..."
         echo "$exp $ver -q $qual"
@@ -323,7 +320,7 @@ else
 #!/usr/bin/env bash
 #Setup script for "$exp" with requested version and qualifiers (may default to current version)
 # TODO: avoid hard-coding the studio version here
-setup studio v0_03_00
+setup studio
 setup $exp $ver -q $qual
 export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
 export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
