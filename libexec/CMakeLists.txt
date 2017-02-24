@@ -10,7 +10,6 @@ file(GLOB studio_SUBCOMMANDS
      "studio-*"
 )
 
-install(PROGRAMS studio
-                 ${studio_SUBCOMMANDS}
+install(PROGRAMS studio ${studio_SUBCOMMANDS}
         DESTINATION "${product}/${version}/libexec"
 )

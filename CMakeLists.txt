@@ -17,18 +17,21 @@ project(studio NONE)
 find_package(cetbuildtools REQUIRED)
 include(CetCMakeEnv)
 
+
+# a few more definitions
+set( SLTYPE "noarch" )
+set( UPSFLAVOR NULL )
+set( flavorqual ${SLTYPE} )
+set( flavorqual_dir ${product}/${version}/${flavorqual} )
+
 # studio has no architecture dependence
-cet_cmake_env(noarch)
+cet_cmake_env(NULL)
 
 # source code
+add_subdirectory(bin)
 add_subdirectory(libexec)
 add_subdirectory(completions)
 add_subdirectory(ups)
 
 # packaging utility
 include(UseCPack)
-
-
-#add_custom_command(TARGET studio POST_BUILD
-#    COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/libexec/studio ${CURRENT_SOURCE_DIR}/bin/studio)
-#install(CODE "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_CURRENT_SOURCE_DIR}/libexec/studio ${CMAKE_CURRENT_SOURCE_DIR}/bin/studio)")
