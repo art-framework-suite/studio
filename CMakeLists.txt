@@ -17,15 +17,8 @@ project(studio NONE)
 find_package(cetbuildtools REQUIRED)
 include(CetCMakeEnv)
 
-
-# a few more definitions
-set( SLTYPE "noarch" )
-set( UPSFLAVOR NULL )
-set( flavorqual ${SLTYPE} )
-set( flavorqual_dir ${product}/${version}/${flavorqual} )
-
 # studio has no architecture dependence
-cet_cmake_env(NULL)
+cet_cmake_env(noarch)
 
 # source code
 add_subdirectory(bin)
