@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Usage: studio-filter name
+# Usage: studio create-filter name
 # Summary: Writes a skeleton filter plugin along with a FHiCL file to
 #          configure it.
 #
@@ -12,9 +12,9 @@
 #          you must edit the CMakeLists.txt to remove the build commands
 #          related to it.
 #
-# Help: studio-filter 
+# Help: studio create-filter 
 #
-#     studio-filter myFilter
+#     studio create-filter myFilter
 #     OUTPUT:
 #	src/myFilter_module.cc
 #	src/myFilter.fcl
@@ -25,11 +25,11 @@ if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   exit 1
 fi
 
-skeltag=""
-ep=""
+skeltag="filter"
+ep="f1"
 #checking for empty call
 if [ -z "$1" ]; then
-echo "'studio-filter' requires specification of a plugin name."
+echo "'studio create-filter' requires specification of a plugin name."
 echo "Please try 'studio help create-filter'"
 exit 2
 fi
@@ -37,7 +37,6 @@ fi
 name="$1"
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
-
 if ( !  cetskelgen "$skeltag" "$name" ) ; then 
   echo cetskelgen "$skeltag" "$name" failed
   exit 2

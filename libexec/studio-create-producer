@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# Usage: studio-producer name
+# Usage: studio create-producer name
 # Summary: Writes a skeleton producer plugin along with a FHiCL file to
 #          configure it.
 #
-#          'studio-producer' will also appropriately update your source
+#          'studio create-producer' will also appropriately update your source
 #          directory CMakeLists.txt file to compile and link your plugin
 #          library.
 #
@@ -12,9 +12,9 @@
 #          you must edit the CMakeLists.txt to remove the build commands
 #          related to it.
 #
-# Help: studio-producer 
+# Help: studio create-producer 
 #
-#     studio-producer myProducer
+#     studio create-producer myProducer
 #     OUTPUT:
 #	src/myProducer_module.cc
 #	src/myProducer.fcl
@@ -25,11 +25,11 @@ if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   exit 1
 fi
 
-skeltag=""
-ep=""
+skeltag="producer"
+ep="p1"
 #checking for empty call
 if [ -z "$1" ]; then
-echo "'studio-producer' requires specification of a plugin name."
+echo "'studio create-producer' requires specification of a plugin name."
 echo "Please try 'studio help create-producer'"
 exit 2
 fi
