@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Usage: studio create-service name
+# Summary: Writes a skeleton service plugin along with a FHiCL file to
+#          configure it.
+#
+#          'studio create-service' will also appropriately update your source
+#          directory CMakeLists.txt file to compile and link your plugin
+#          library.
+#
+#          NOTE: if you should decide to remove the generated source file,
+#          you must edit the CMakeLists.txt to remove the build commands
+#          related to it.
+#
+# Help: studio create-service
+#
+#     studio create-service myService
+#
+#     OUTPUT:
+#	src/myService_module.cc
+#	src/myService.fcl
+#	src/CMakeLists.txt
+
+if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
+  echo "Please source the setup script"
+  exit 1
+fi
+
+skeltag=""
+ep=""
+#checking for empty call
+if [ -z "$1" ]; then
+echo "'studio create-service' requires specification of a plugin name."
+echo "Please try 'studio help create-service'"
+exit 2
+fi
+name="$1"
+cd "$STUDIO_PROJECT_SRC_PATH"
+echo "$STUDIO_PROJECT_SRC_PATH"
+
+skeltag="service:--scope,LEGACY"
+
+if ( !  cetskelgen "$skeltag" "$name" ) ; then 
+  echo cetskelgen "$skeltag" "$name" failed
+  exit 2
+fi
+
+# ===========
+# == cmake ==
+# ===========
+tag="service"
+targ_name="$name"_"$tag"
+src_name=""$targ_name".cc"
+liblist="\${${tag}_lib_list}"
+
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
+
+#"$name" lib linking
+add_library($targ_name SHARED $src_name)
+target_link_libraries($targ_name $liblist)
+
+EOT
+
+touch $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
+#"$targ_name".fcl
+#bare bones fcl test
+services: {
+  $name: {}
+}
+EOT
+
+echo "To build it now, use 'studio build'."
