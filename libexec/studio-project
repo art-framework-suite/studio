@@ -112,7 +112,7 @@ unset rep
 #assigning arguments
 OPTIND=
 OPTARR=
-optstring=s:v:q:r:n:
+optstring=v:q:r:n:
 
 arrange_opts "$optstring" "$@"
 set -- "${OPTARR[@]}"
@@ -120,9 +120,6 @@ set -- "${OPTARR[@]}"
 OPTIND=1
 while getopts $optstring opt;do
     case ${opt} in 
-           s|e) 
-                exp="$OPTARG"
-                ;;
            v) 
                 ver="$OPTARG"
                 ;;
@@ -140,7 +137,7 @@ done
 
 shift $((OPTIND-1))
 
-#checking for empty call ans positional arguments
+#checking for empty call and positional arguments
 if [ $# == 0 ] ; then
     echo "'studio project' requires specification of a software suite."
     echo "Please try 'studio help project'"
@@ -166,6 +163,7 @@ if [ ! -z "$exp" ] && [ ! -z "$rep" ]; then
     echo "You cannot specify a software suite name *and* a repository."
     exit
 fi
+
 
 
 #=========================================================================================================
@@ -210,21 +208,6 @@ EOF
 
 else
 
-#NORMAL DIRECTORY TREE
-    if [ -d "$name" ]; then
-        echo "The directory ${name} already exists, please remove it or specify a different name"
-        exit 1
-    fi
-
-    mkdir -p "$name" || ( echo "Failed to project directory ${name}" ; exit 1)
-    cd "$name"
-    TOP=${PWD}
-    mkdir build
-    touch build/CMakeCache.txt
-    mkdir ext
-    mkdir src
-
-
 # === may need to change where this is done ===
 # === probably after the if switch for wkbk ===
     BUILD_DIR=$TOP/build
@@ -244,43 +227,82 @@ else
 # --- but for now this works                 ---
 # ----------------------------------------------
 
-echo "Creating the project directory '${name}'."
+# need to sanity check exp , ver and qual against currently available ups products
+chk=$(ups list -aK+ "$exp" | sort |  tail -1 | sed -e's/"//g')
+if [ "QQ$chk" == "QQ" ];then
+    echo "Unknown UPS product $exp . Check UPS product name for typo or ensure it is installed in $PRODUCTS."
+    exit 2
+fi
+#version and qual specified
+if [ ! -z "$ver" ] && [ ! -z "$qual" ]; then
+    chk=$(ups list -aK+ "$exp" "$ver" -q"$qual"| sort | tail -1 | sed -e's/"//g')
+    if [ "QQ$chk" == "QQ" ];then
+        echo "Unknown version $ver and/or qualifier $qual for UPS product $exp."
+        echo "Possible commands"
+        ups list -aK+ $exp | sort -u | sed -e's/"//g' | awk '{print "studio project "$1" "$2" -q "$4}'
+        exit 2
+    fi
+    echo "  Using software suite $exp."
+    echo "  Qualifier $qual and version $ver will be used."
+    echo ""
+fi
+
 #no version specified but qual specified
-    if [ -z "$ver" ] && [ ! -z "$qual" ]; then
-        ver=$(ups list -aK+ "$exp" | grep $qual | sort | tail -1 | awk '{print $2}'| sed -e's/"//g')
-        echo ""
-        echo "  no version specified but qualifier specified..."
-        echo "  latest version will be used..."
-        echo "  setup $exp $ver -q $qual"
-        echo "  added to setup.sh script"
-        echo ""
+if [ -z "$ver" ] && [ ! -z "$qual" ]; then
+    chk=$(ups list -aK+ "$exp" -q"$qual"| sort | tail -1 | sed -e's/"//g')
+    if [ "QQ$chk" == "QQ" ];then
+        echo "Unknown qualifier $qual for UPS product $exp."
+        echo "Possible commands"
+        ups list -aK+ $exp | sort -u| sort -u | sed -e's/"//g' | awk '{print "studio project "$1" "$2" -q "$4}'
+        exit 2
     fi
+    ver=$(ups list -aK+ "$exp" -q"$qual" | sort | tail -1 | awk '{print $2}'| sed -e's/"//g')
+    echo "  Using software suite $exp."
+    echo "  Qualifier $qual specified but no version specified."
+    echo "  Latest version $ver will be used."
+    echo ""
+fi
 #no qual specified but version specified
-    if [ -z "$qual" ] && [ ! -z "$ver" ]; then
-        qual=$(ups list -aK+ $exp | grep $ver | sort | tail -1 | awk '{print $4}'| sed -e's/"//g')
-        echo ""
-        echo "  no qualifier specified but version specified..."
-        echo "  latest qualifier will be used..."
-        echo "  setup $exp $ver -q $qual"
-        echo "  added to setup.sh script"
-        echo ""
+if [ -z "$qual" ] && [ ! -z "$ver" ]; then
+    chk=$(ups list -aK+ "$exp" "$ver" | sort | tail -1 | awk '{print $1}'| sed -e's/"//g')
+    if [ "QQ$chk" == "QQ" ];then
+        echo " Unknown version $ver for UPS product $exp."
+        echo "Possible commands"
+        ups list -aK+ $exp | sort -u| sort -u | sed -e's/"//g' | awk '{print "studio project "$1" "$2" -q "$4}'
+        exit 2
     fi
-#no version and no qual specified?
-    if [ -z "$ver" ] && [ -z "$qual"]; then
-        ver=$(ups list -aK+ "$exp" | sort | tail -1 | awk '{print $2}'| sed -e's/"//g')
-        qual=$(ups list -aK+ $exp | sort | tail -1 | awk '{print $4}'| sed -e's/"//g')
-        echo ""
-        echo "  no qualifier and no version specified..."
-        echo "  latest qualifier and version will be used..."
-        echo "  setup $exp $ver -q $qual"
-        echo "  added to setup.sh script"
-        echo ""
+    qual=$(ups list -aK+ $exp $ver | sort | tail -1 | awk '{print $4}'| sed -e's/"//g')
+    echo "  Using software suite $exp."
+    echo "  Version $ver specified but no qualifier specified."
+    echo "  Latest qualifier $qual will be used."
+    echo ""
+fi
+#no version and no qual specified
+if [ -z "$ver" ] && [ -z "$qual"]; then
+    ver=$(ups list -aK+ "$exp" | sort | tail -1 | awk '{print $2}'| sed -e's/"//g')
+    qual=$(ups list -aK+ "$exp" "$ver" | sort | tail -1 | awk '{print $4}'| sed -e's/"//g')
+    echo "  Using software suite $exp."
+    echo "  No qualifier and no version specified."
+    echo "  Latest qualifier $qual and version $ver will be used."
+    echo ""
+fi
+
+echo "Creating the project directory '${name}'."
+#NORMAL DIRECTORY TREE
+    if [ -d "$name" ]; then
+        echo "The directory ${name} already exists, please remove it or specify a different name with"
+        echo " studio project $exp -n dirname"
+        exit 1
     fi
-    echo ""
-    echo "The project directory '${name}' has been created."
-    echo "Remember to source '${name}/setup.sh' in each new shell"
-    echo "Use 'studio help' for more details."
-    echo ""
+
+    mkdir -p "$name" || ( echo "Failed to project directory ${name}" ; exit 1)
+    cd "$name"
+    TOP=${PWD}
+    mkdir build
+    touch build/CMakeCache.txt
+    mkdir ext
+    mkdir src
+
 
 # writing the setup script
 
@@ -327,3 +349,10 @@ cat << 'EOF' > src/CMakeLists.txt
 #    add_library(<fill in which library>)
 #    target_link_library(<more nonsense>)
 EOF
+
+echo ""
+echo "The project directory '${name}' has been populated with default scripts."
+echo "Remember to source '${name}/setup.sh' in each new shell"
+echo "Use 'studio help' for more details."
+echo ""
+
