@@ -14,6 +14,7 @@ Common:
     prodDir()
     setupEnv()
     envSet(${UPS_PROD_NAME_UC}_VERSION, @version@)
+    envSet(${UPS_PROD_NAME_UC}_INCLUDE_DIR, @include@)
     # add the bin directory to the path
     pathPrepend(PATH, ${UPS_PROD_DIR}/bin )
     # set shortcut environment variable to save time in future
