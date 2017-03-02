@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Usage: studio create-analyzer name
+#
+# Can be shortened to 'studio ca name'
 # Summary: Writes a skeleton analyzer plugin along with a FHiCL file to
 #          configure it.
 #
@@ -19,7 +21,6 @@
 #	src/myAnalyzer_module.cc
 #	src/myAnalyzer.fcl
 #       src/CMakeLists.txt
-
 if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source the setup script"
   exit 1

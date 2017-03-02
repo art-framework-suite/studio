@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Usage: studio liblist  
+#
+# Can be shortened to 'studio ll'
 # Summary: Enumerate all libraries available in the project environment.
 
 # Help: Prints out information about all libraries available in all
@@ -14,59 +16,37 @@ if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source setup script"
   exit 1
 fi
-OUTFILE="library-list.txt"
-if [ -f $OUTFILE ]; then
-  echo "Library list file $OUTFILE already exists."
-  echo "Please delete it and re-run liblist if you wish to regenerate it."
-  exit 1
-else
-  echo "Writing $OUTFILE"
-  touch $OUTFILE
-  active_prods=$(ups active | grep -v "Active ups products:" | cut -d " " -f 1 | tr '[a-z]' '[A-Z]' | tr '\n' ';')
+  active_prods=$(ups active | grep -v "Active ups products:" | awk '{print $1}' | tr '[a-z]' '[A-Z]' | tr '\n' ';')
   trimmed_prods=${active_prods::${#active_prods}-1}
-  #echo "$trimmed_prods"
   declare -A prod_map
-  #prod_map=([""]="")
   IFS=';' read -r -a dirs_list <<< "$trimmed_prods"
   for prod in "${dirs_list[@]}"
   do
-    echo "pre-check"
-    echo "$prod"
-    #eval echo "$prod" 
     lib=$(eval echo "\${${prod}_LIB}")
-    #echo "$lib"
     if [ -z ${lib} ]; then 
      continue 
     else
-      #echo "-$prod-"
-      #echo "-$lib-"
-      #eval echo "\$$prod"
       prod_map["$prod"]=$lib
-      #prod_map+=(["${prod}"]="${lib}")
     fi
   done
   
-  
+  printf "%-15s %-50s %s\n" package variable library
   for prod_key in ${!prod_map[@]}
   do
     shopt -s nullglob
-    #echo "new prod"
-    echo "product: $prod_key" >> library-list.txt
     so_files=$(eval echo "${prod_map[$prod_key]}/*.{so,dylib}")
     IFS=' ' read -r -a so_list <<< "$so_files"
-    #echo "map value: ${prod_map[$prod_key]}"
     if [ ${#so_list[@]} -eq 0 ]; then
-      #echo "empty array?"
-      #echo ""
       continue
     else
       for so in "${so_list[@]}"
       do 
-        #echo "$so"
-        so_name=$(echo "$so" | sed "s/^\/.*lib\(.*\)\\.\[so|dylib\]$/\\1/g")
-        echo "library name: $so_name ; library path: $so" >> library-list.txt 
+        so_name=${so##${prod_map[$prod_key]}/}
+        libname1=${so_name%%\.so}
+        libname2=${libname1%%\.dylib}
+        libname=${libname2##lib}
+        package=$(echo $prod_key | tr '[A-Z]' '[a-z]')
+        printf "%-15s %-50s %s\n" $package $libname $so
       done
-      echo "" >> library-list.txt
     fi
   done
-fi  

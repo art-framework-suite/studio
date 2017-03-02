@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Usage: studio create-filter name
+#
+# Can be shortened to 'studio cf name'
 # Summary: Writes a skeleton filter plugin along with a FHiCL file to
 #          configure it.
 #

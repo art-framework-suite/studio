@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Usage: studio create-producer name
+#
+# Can be shortened to 'studio cp name'
 # Summary: Writes a skeleton producer plugin along with a FHiCL file to
 #          configure it.
 #

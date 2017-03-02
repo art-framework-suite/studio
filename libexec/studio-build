@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Usage: studio build [ src-dir-name [ ... src-dir-name ]] 
+# 
+# Can be shortened to 'studio b'
 # Summary: compile and link (build) code
 # Help: This command compiles and links your code.  Behind the scenes
 # most of this is calling CMake or make, but there's a little
@@ -44,10 +46,8 @@ if [ -z $1 ]; then
     echo "/src/... then please refer to help pages"
     echo ""
     in_source=false
-    #working_dir="/home/rbouabid/studio/studio/libexec/src"
     working_dir="$PWD"
     build_dirs="no args"
-    #cmake -D IS_IN_SOURCE:BOOL=FALSE -D WORKING_DIR:STRING=$STUDIO_PROJECT_SRC_PATH -D BUILD_DIRS:STRING="no args" /home/rbouabid/studio/studio/libexec/CMakeLists.txt
   else
     echo ""
     echo ""
@@ -57,8 +57,6 @@ if [ -z $1 ]; then
     in_source=true
     working_dir="$PWD"
     build_dirs="no args"
-    #cmake -D IS_IN_SOURCE:BOOL=TRUE -D WORKING_DIR:STRING=$PWD -D BUILD_DIRS:STRING="no args" /home/rbouabid/studio/studio/libexec/CMakeLists.txt
-    ###consider adding cmake lists if they're not present
   fi
 
 else
@@ -71,32 +69,22 @@ else
   temp=$temp"$var;"
   done
   dir_list=${temp%;}
-  #echo "$dir_list"
   in_source=true
   working_dir="$PWD"
   build_dirs="$dir_list"
-  #cmake -D BUILD_DIRS:STRING="$dir_list" /home/rbouabid/studio/studio/libexec/CMakeLists.txt
-  # ------  -  - --------
-  # -----+  ^  ^  +------
-  # ------- ---- --------
 fi
 
 if [ "$PWD" != "$STUDIO_PROJECT_BUILD_PATH" ]; then
     cd $STUDIO_PROJECT_BUILD_PATH 
-    echo "getting you to build directory..."
 fi
 
-#export CC=/products/gcc/v4_9_3a/Linux64bit+2.6-2.12/bin/gcc
-#export CXX=/products/gcc/v4_9_3a/Linux64bit+2.6-2.12/bin/g++
 export CC=`which gcc`
 export CXX=`which g++`
 
-#cmake /home/rbouabid/studio/studio/libexec 
 echo "in_source = $in_source"
 echo "working_dir = $working_dir"
 echo "build_dirs = $build_dirs"
 echo "pwd = $PWD"
-#some debug stuff
 
 cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $STUDIO_PROJECT_BUILD_PATH ..
 make 
