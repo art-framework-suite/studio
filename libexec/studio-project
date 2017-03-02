@@ -164,64 +164,6 @@ if [ ! -z "$exp" ] && [ ! -z "$rep" ]; then
     exit
 fi
 
-
-
-#=========================================================================================================
-#==============================================MAKING=====================================================
-#=============================================NEC DIRS====================================================
-#===========================================&cmakelists?==================================================
-#====================================================================+====================================
-
-
-#big if check for art workbook
-
-#art workbook garbage
-if [ "$rep" == "art-workbook" ]; then
-    git clone http://cdcvs.fnal.gov/projects/art-workbook
-    mv $PWD/art-workbook $PWD/$name
-    mv $PWD/$name/art-workbook $PWD/$name/src
-    cd $name
-    mkdir build
-    touch build/CMakeCache.txt
-    mkdir ext
-    BUILD_DIR=`pwd`/build
-    EXT_PATH=`pwd`/ext
-    SRC_DIR=`pwd`/src
-    cat << EOF > setup.sh
-#!/usr/bin/env bash
-#Setup script for "$exp" with requested version and qualifiers (may default to current version)
-source ups/setup_for_development -d 
-export STUDIO_PROJECT_BUILD_PATH="$BUILD_DIR"
-export STUDIO_PROJECT_SRC_PATH="$SRC_DIR"
-os_name=$(uname -s)
-if [ \$os_name = "Darwin" ]; then
-  DYLD_LIBRARY_PATH=$BUILD_DIR/lib:\$DYLD_LIBRARY_PATH
-else
-  LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
-fi
-EOF
-    echo ""
-    echo "The project directory '${name}' has been created."
-    echo "Remember to source '${name}/setup.sh' in each new shell"
-    echo "Use 'studio help' for more details."
-    echo ""
-
-else
-
-
-#=========================================================================================================
-#==============================================MAKING=====================================================
-#===========================================SETUP SCRIPT==================================================
-#=========================================================================================================
-
-# ----------------------------------------------
-# --- writing "default" variables to version ---
-# --- and qual. otherwise keep as is. How do I -
-# --- check for errors? UPS will complain but --
-# --- can I do better? maybe check against ups -
-# --- but for now this works                 ---
-# ----------------------------------------------
-
 # need to sanity check exp , ver and qual against currently available ups products
 chk=$(ups list -aK+ "$exp" | sort |  tail -1 | sed -e's/"//g')
 if [ "QQ$chk" == "QQ" ];then
@@ -282,45 +224,66 @@ if [ -z "$ver" ] && [ -z "$qual"]; then
     echo ""
 fi
 
+#=========================================================================================================
+#==============================================MAKING=====================================================
+#=============================================NEC DIRS====================================================
+#====================================================================+====================================
+
 echo "Creating the project directory '${name}'."
-#NORMAL DIRECTORY TREE
-    if [ -d "$name" ]; then
-        echo "The directory ${name} already exists, please remove it or specify a different name with"
-        echo " studio project $exp -n dirname"
-        exit 1
+
+#define some common variables used for generating scripts
+PROJ=${PWD}/${name}
+BUILD_DIR=${PROJ}/build
+EXT_PATH=${PROJ}/ext
+SRC_DIR=${PROJ}/src
+
+
+if [ -d "$PROJ" ]; then
+    echo "The directory ${PROJ} already exists, please remove/rename it"
+    echo "or specify a different directory name with"
+    echo "    studio project $exp -n dirname"
+    exit 1
+else
+    mkdir -p "$PROJ" || ( echo "Failed to project directory $PROJ" ; exit 1)
+    mkdir ${BUILD_DIR}
+    touch ${BUILD_DIR}/CMakeCache.txt
+    mkdir ${EXT_PATH}
+
+    if [ "$rep" == "art-workbook" ]; then
+        git clone http://cdcvs.fnal.gov/projects/art-workbook
+        mv $PWD/art-workbook $PROJ
+        rmdir ${SRC_DIR}
+        mv $PROJ/art-workbook ${SRC_DIR}
+    else
+        mkdir ${SRC_DIR}
     fi
+fi
 
-    mkdir -p "$PWD/$name" || ( echo "Failed to project directory ${name}" ; exit 1)
-    cd "$PWD/$name"
-    TOP=${PWD}
-    mkdir ${TOP}/build
-    touch ${TOP}/build/CMakeCache.txt
-    mkdir ${TOP}/ext
-    mkdir ${TOP}/src
-    BUILD_DIR=$TOP/build
-    EXT_PATH=$TOP/ext
-    SRC_DIR=$TOP/src
-
-
-# writing the setup script
-
-    cat << EOF > ${TOP}/setup.sh
+#=========================================================================================================
+#==============================================MAKING=====================================================
+#===========================================SETUP SCRIPT==================================================
+#=========================================================================================================
+if [ $(uname -s) = "Darwin" ]; then
+    cat << EOF > ${PROJ}/setup.sh
 #!/usr/bin/env bash
-#Setup script for "$exp" with requested version and qualifiers (may default to current version)
 setup studio
 setup $exp $ver -q $qual
+export STUDIO_PROJECT_PATH=$PROJ
 export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
 export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
-if [ \$(uname -s) = "Darwin" ]; then
-  DYLD_LIBRARY_PATH=$BUILD_DIR/lib:\$DYLD_LIBRARY_PATH
-else
-  LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
-fi
+export DYLD_LIBRARY_PATH=$BUILD_DIR/lib:\$DYLD_LIBRARY_PATH
 EOF
-
-# <<<<<<<<<<<<<<< ending the check for artworkbook
+else
+    cat << EOF > ${PROJ}/setup.sh
+#!/usr/bin/env bash
+setup studio
+setup $exp $ver -q $qual
+export STUDIO_PROJECT_PATH=$PROJ
+export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
+export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
+LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
+EOF
 fi
-# >>>>>>>>>>>>>>> ending the check for artworkbook
 
 #=========================================================================================================
 #==============================================CMAKE======================================================
@@ -329,13 +292,14 @@ fi
 #=========================================================================================================
 
 #CMake stuff
-cat $STUDIO_INC/helpers.cmake > helpers.cmake
+cat $STUDIO_INC/helpers.cmake > ${PROJ}/helpers.cmake
+cat $STUDIO_INC/setliblist.cmake > ${PROJ}/setliblist.cmake
 
 #cmake macro
 
-cat $STUDIO_INC/CMakeLists.txt.tmpl > CMakeLists.txt
+cat $STUDIO_INC/CMakeLists.txt.tmpl > ${PROJ}/CMakeLists.txt
 
-cat << 'EOF' > src/CMakeLists.txt
+cat << 'EOF' > ${PROJ}/src/CMakeLists.txt
 #source cmake list file
 #there are two general options:
 #    1. everything lives in src directory and we do it all here
@@ -349,8 +313,8 @@ cat << 'EOF' > src/CMakeLists.txt
 EOF
 
 echo ""
-echo "The project directory '${name}' has been populated with default scripts."
-echo "Remember to source '${name}/setup.sh' in each new shell"
+echo "The project directory ${PROJ} has been populated with default scripts."
+echo "Remember to source ${PROJ}/setup.sh in each new shell"
 echo "Use 'studio help' for more details."
 echo ""
 
