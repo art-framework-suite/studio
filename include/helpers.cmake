@@ -66,17 +66,3 @@ macro(find_lib_dirs)
 #message(STATUS "${lib_dirs_list}")
 
 endmacro()
-
-macro(canvasver)
-    execute_process(COMMAND ups active COMMAND grep -v "Active UPS products:" COMMAND grep -e "^canvas" COMMAND awk "{print $2}" OUTPUT_VARIABLE canvas_ver)
-#    message(STATUS "canvas_ver ${canvas_ver}")
-#    set(canvas_ver $ENV{CANVAS_VER})
-    set(min_canvas_ver "v1_06_00")
-endmacro()
-
-macro(artver)
-    execute_process(COMMAND ups active COMMAND grep -v "Active UPS products:" COMMAND grep -e "^art" COMMAND awk "{print $2}" OUTPUT_VARIABLE art_ver)
-#    message(STATUS "art_ver ${art_ver}")
-#    set(art_ver $ENV{ART_VER})
-    set(min_art_ver "v2_00_00")
-endmacro()

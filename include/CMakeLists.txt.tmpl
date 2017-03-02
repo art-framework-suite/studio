@@ -24,180 +24,28 @@ foreach(inc_dir ${inc_dirs_list})
 include_directories(${inc_dir})
 endforeach(inc_dir ${inc_dirs_list})
 
-
-#using these jank maps to link libs
 find_lib_dirs()
 foreach(lib_prod ${lib_prod_list})
-    #message(STATUS "new product")
-    #message(STATUS "${lib_prod}")
-    #message(STATUS "${map_${lib_prod}}")
-file(GLOB so_list ${map_${lib_prod}}/*.so ${map_${lib_prod}}/*.dylib)
-    #message(STATUS "${so_list}")
-foreach(so ${so_list})
-        #message(STATUS "${so}")
-string(REGEX REPLACE "^.*/lib([^/]*)\\.(so|dylib)$" "\\1" var ${so})
-        #message(STATUS ${var})
-set(${var} ${so})
-endforeach(so ${so_list})
+    file(GLOB so_list ${map_${lib_prod}}/*.so ${map_${lib_prod}}/*.dylib)
+    foreach(so ${so_list})
+        string(REGEX REPLACE "^.*/lib([^/]*)\\.(so|dylib)$" "\\1" var ${so})
+        set(${var} ${so})
+    endforeach(so ${so_list})
 endforeach(lib_prod ${lib_prod_list})
     #root special case!
-    #message(STATUS "$ENV{ROOTSYS}")
 file(GLOB root_lib_list $ENV{ROOTSYS}/lib/*.so $ENV{ROOTSYS}/lib/*.dylib)
 foreach(root_so ${root_lib_list})
-        #message(STATUS "${root_so}")
-string(REGEX REPLACE "^/.*lib(.*)\\.(so|dylib)$" "\\1" root_var ${root_so})
-        #message(STATUS ${root_var})
-set(${root_var} ${root_so})
+    string(REGEX REPLACE "^/.*lib(.*)\\.(so|dylib)$" "\\1" root_var ${root_so})
+    set(${root_var} ${root_so})
 endforeach(root_so ${root_lib_list})
 
+# define the set of libraries needed to link a service or module library
 #lib lists per plugin
 set(service_lib_list)
 set(module_lib_list)
 set(source_lib_list)
-
-
-# decide on which set of libraries to use based on art and/or canvas version
-canvasver()
-artver()
-
-if ( ${art_ver} STRLESS ${min_art_ver} )
-        list(INSERT service_lib_list 0
-            ${art_Framework_Services_Registry}
-            ${art_Persistency_Common}
-            ${art_Utilities}
-            ${fhiclcpp}
-            ${cetlib}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-        list(INSERT module_lib_list 0
-            ${art_Framework_Core}
-            ${art_Framework_Principal}
-            ${art_Persistency_Common}
-            ${art_Persistency_Provenance}
-            ${art_Utilities}
-            ${fhiclcpp}
-            ${cetlib}
-            ${Core}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-        list(INSERT source_lib_list 0
-            ${art_Framework_IO_Sources}
-            ${Boost_FILESYSTEM_LIBRARY}
-            ${Boost_SYSTEM_LIBRARY}
-            ${art_Framework_Core}
-            ${art_Framework_Principal}
-            ${art_Persistency_Common}
-            ${art_Persistency_Provenance}
-            ${art_Utilities}
-            ${fhiclcpp}
-              ${cetlib}
-              ${Core}
-              ${boost_filesystem}
-              ${boost_system}
-        )
-
-else()
-    if ( ${canvas_ver} STRLESS ${min_canvas_ver} )
-        list(INSERT service_lib_list 0
-            ${art_Framework_Services_Registry}
-            ${art_Persistency_Common}
-            ${art_Utilities}
-            ${canvas_Persistency_Common}
-            ${canvas_Utilities}
-            ${fhiclcpp}
-            ${cetlib}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-        list(INSERT module_lib_list 0
-            ${art_Framework_Core}
-            ${art_Framework_Principal}
-            ${art_Persistency_Common}
-            ${art_Persistency_Provenance}
-            ${art_Utilities}
-            ${canvas_Persistency_Common}
-            ${canvas_Persistency_Provenance}
-            ${canvas_Utilities}
-            ${fhiclcpp}
-            ${cetlib}
-            ${Core}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-        list(INSERT source_lib_list 0
-            ${art_Framework_IO_Sources}
-            ${Boost_FILESYSTEM_LIBRARY}
-            ${Boost_SYSTEM_LIBRARY}
-            ${art_Framework_Core}
-            ${art_Framework_Principal}
-            ${art_Persistency_Common}
-            ${art_Persistency_Provenance}
-            ${art_Utilities}
-            ${canvas_Persistency_Common}
-            ${canvas_Persistency_Provenance}
-            ${canvas_Utilities}
-            ${fhiclcpp}
-            ${cetlib}
-            ${Core}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-    
-    else()
-        list(INSERT service_lib_list 0
-            ${art_Framework_Services_Registry}
-            ${art_Persistency_Common}
-            ${art_Utilities}
-            ${canvas}
-            ${fhiclcpp}
-            ${cetlib}
-            ${cetlib_except}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-        list(INSERT module_lib_list 0
-            ${art_Framework_Core}
-            ${art_Framework_Principal}
-            ${art_Persistency_Common}
-            ${art_Persistency_Provenance}
-            ${art_Utilities}
-            ${canvas}
-            ${fhiclcpp}
-            ${cetlib}
-            ${cetlib_except}
-            ${Core}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-        list(INSERT source_lib_list 0
-            ${art_Framework_IO_Sources}
-            ${Boost_FILESYSTEM_LIBRARY}
-            ${Boost_SYSTEM_LIBRARY}
-            ${art_Framework_Core}
-            ${art_Framework_Principal}
-            ${art_Persistency_Common}
-            ${art_Persistency_Provenance}
-            ${art_Utilities}
-            ${canvas}
-            ${fhiclcpp}
-            ${cetlib}
-            ${cetlib_except}
-            ${Core}
-            ${boost_filesystem}
-            ${boost_system}
-        )
-    
-    endif()
-endif()
-
-#message(STATUS "art_ver ${art_ver}")
-#message(STATUS "min_art_ver ${min_art_ver}")
-#message(STATUS "canvas_ver ${canvas_ver}")
-#message(STATUS "min_canvas_ver ${min_canvas_ver}")
-#message(STATUS ${module_lib_list} )
-#message(STATUS ${service_lib_list})
+include(setliblist.cmake)
+setliblist()
 
 #adding sources
 
@@ -222,3 +70,5 @@ message(STATUS "no specified dirs...")
         add_subdirectory(${work_dir})
     endif(NOT in_src)
 endif( NOT build_dir_list STREQUAL "no args")
+
+
