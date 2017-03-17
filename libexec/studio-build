@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
-# Usage: studio build [ src-dir-name [ ... src-dir-name ]] 
+# Usage: studio build [make options]
 # 
 # Summary: compile and link (build) code
-# Help: This command compiles and links your code.  Behind the scenes
-# most of this is calling CMake and make
+# Help: This command compiles and links your code.
 #
-# If you pass specific subdirectories, then only the code in those
-# directories will be compiled.  If you are in a source subdirectory,
-# then only that subdirectory will get built. Yes, studio does use an
-# "out of source" build; you just don't have to flip back and forth
-# between "source" and "build" directories; studio will do it for you.
+# make options will be passed onto make command
 #
-# Can be shortened to 'studio b'
+# Can be shortened to 'studio b [ make options ]'
 
-echo ""
+mflags=$@
 
 # checking for setup run
 
@@ -26,52 +21,52 @@ fi
 
 #some variables I want
 in_source=true
-working_dir=""
+working_dir="$PWD"
 build_dirs="no args"
 
 #checking if args are read in
-if [ -z $1 ]; then
-  echo ""
-  echo "You have not specified to build specific directories..."
-  echo "Checking where you are..."
-  #checking if not in source
-  insrc=`echo $PWD | grep $STUDIO_PROJECT_SRC_PATH`
-  if [ -z $insrc ]; then
-    echo ""
-    echo ""
-    echo "You are not in source directory"
-    echo "Building everything in /src directory..."
-    echo "If you would like to only build a subset of directories inside"
-    echo "/src/... then please refer to help pages"
-    echo ""
-    in_source=false
-    working_dir="$PWD"
-    build_dirs="no args"
-  else
-    echo ""
-    echo ""
-    echo "You are somewhere inside the source directory and have not specified a specific directory(s) to build..."
-    echo "Passing $PWD as the directory to build."
-    echo "If you would like to build something else as well, please see the help pages"
-    in_source=true
-    working_dir="$PWD"
-    build_dirs="no args"
-  fi
-
-else
-  # ---------- ----------
-  # -- reading in args --
-  # ---------- ----------
-  temp=""
-  for var;
-  do
-  temp=$temp"$var;"
-  done
-  dir_list=${temp%;}
-  in_source=true
-  working_dir="$PWD"
-  build_dirs="$dir_list"
-fi
+#if [ -z $1 ]; then
+#  echo ""
+#  echo "You have not specified to build specific directories..."
+#  echo "Checking where you are..."
+#  #checking if not in source
+#  insrc=`echo $PWD | grep $STUDIO_PROJECT_SRC_PATH`
+#  if [ -z $insrc ]; then
+#    echo ""
+#    echo ""
+#    echo "You are not in source directory"
+#    echo "Building everything in $STUDIO_PROJECT_SRC_PATH directory..."
+#    echo "If you would like to only build a subset of directories inside"
+#    echo "$STUDIO_PROJECT_SRC_PATH then please refer to help pages"
+#    echo ""
+#    in_source=false
+#    working_dir="$PWD"
+#    build_dirs="no args"
+#  else
+#    echo ""
+#    echo ""
+#    echo "You are somewhere inside the source directory and have not specified a specific directory(s) to build..."
+#    echo "Passing $PWD as the directory to build."
+#    echo "If you would like to build something else as well, please see the help pages"
+#    in_source=true
+#    working_dir="$PWD"
+#    build_dirs="no args"
+#  fi
+#
+#else
+#  # ---------- ----------
+#  # -- reading in args --
+#  # ---------- ----------
+#  temp=""
+#  for var;
+#  do
+#  temp=$temp"$var;"
+#  done
+#  dir_list=${temp%;}
+#  in_source=true
+#  working_dir="$PWD"
+#  build_dirs="$dir_list"
+#fi
 
 if [ "$PWD" != "$STUDIO_PROJECT_BUILD_PATH" ]; then
     cd $STUDIO_PROJECT_BUILD_PATH 
@@ -85,5 +80,7 @@ echo "working_dir = $working_dir"
 echo "build_dirs = $build_dirs"
 echo "pwd = $PWD"
 
+echo cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $STUDIO_PROJECT_BUILD_PATH ..
 cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $STUDIO_PROJECT_BUILD_PATH ..
-make 
+echo make ${mflags}
+make ${mflags}

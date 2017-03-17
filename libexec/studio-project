@@ -315,7 +315,7 @@ EOF
 
 echo ""
 echo "The project directory ${PROJ} has been populated with default scripts."
-echo "Remember to source ${PROJ}/setup.sh in each new shell"
+echo "Remember to 'source ${PROJ}/setup.sh' in each new shell"
 echo "Use 'studio help' for more details."
 echo ""
 
