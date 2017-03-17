@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 # Usage: studio build [ src-dir-name [ ... src-dir-name ]] 
 # 
-# Can be shortened to 'studio b'
 # Summary: compile and link (build) code
 # Help: This command compiles and links your code.  Behind the scenes
-# most of this is calling CMake or make, but there's a little
-# more going on than that.
+# most of this is calling CMake and make
 #
 # If you pass specific subdirectories, then only the code in those
 # directories will be compiled.  If you are in a source subdirectory,
@@ -13,6 +11,7 @@
 # "out of source" build; you just don't have to flip back and forth
 # between "source" and "build" directories; studio will do it for you.
 #
+# Can be shortened to 'studio b'
 
 echo ""
 

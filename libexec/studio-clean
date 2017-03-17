@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 # Usage: studio clean   
-# Summary: Cleans build directory. 
-# Help: studio clean removes the contents of the build directory.
+# Summary: Deletes the contents of the build directory.
+# Help: studio clean 
+#       Deletes the contents of the build directory.
 
 if [ -z $STUDIO_PROJECT_BUILD_PATH ]; then
   echo "STUDIO_PROJECT_BUILD_PATH is not set."

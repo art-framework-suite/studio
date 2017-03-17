@@ -2,9 +2,8 @@
 
 # Usage: studio project [-e,-s] <product> [-v] <version> [-q <qualifiers>] [-n <dirname> ]
 #
-# can be shortened to 'studio pro'
 # Summary: Creates a project area for software suite <product>.
-
+#
 # Help: This will create a directory, by default named 'project',
 # in the current directory, and in it a small directory tree for your
 # work. See 'DIRECTORY STRUCTURE' for complete details on the
@@ -77,6 +76,7 @@
 #    studio project dunetpc v06_18_01 -n duntpc_project
 #    studio project uboonecode
 #    studio project uboonecode -n uboone_project
+# can be shortened to 'studio pro'
 set -e
 #=========================================READING IN ARGUMENTS============================================
 

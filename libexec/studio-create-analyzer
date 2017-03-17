@@ -1,33 +1,27 @@
 #!/usr/bin/env bash
 
-# Usage: studio create-analyzer name
+# Usage: studio create-analyzer <name>
 #
-# Can be shortened to 'studio ca name'
-# Summary: Writes a skeleton analyzer plugin along with a FHiCL file to
-#          configure it.
+# Summary: Writes a skeleton analyzer plugin and a FHiCL file to src
 #
-#          'studio-analyzer' will also appropriately update your source
-#          directory CMakeLists.txt file to compile and link your plugin
-#          library.
+# Help: studio create-analyzer <name> 
 #
-#          NOTE: if you should decide to remove the generated source file,
-#          you must edit the CMakeLists.txt to remove the build commands
-#          related to it.
+#     Calls 'cetskelgen analyzer <name>',
+#     creates an appropriate FHiCL file, 
+#     and updates your source directory CMakeLists.txt file to compile
+#     and link your plugin library.
 #
-# Help: studio-analyzer 
+#     NOTE: If you should decide to remove the generated source file,
+#     you must edit the CMakeLists.txt to remove the build commands
+#     related to it.
 #
-#     studio create-analyzer myAnalyzer
-#     OUTPUT:
-#	src/myAnalyzer_module.cc
-#	src/myAnalyzer.fcl
-#       src/CMakeLists.txt
+#     Can be shortened to 'studio ca <name>'
 if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source the setup script"
   exit 1
 fi
 
 skeltag="analyzer"
-ep="a1"
 #checking for empty call
 if [ -z "$1" ]; then
 echo "'studio create-analyzer' requires specification of a plugin name."
@@ -39,18 +33,17 @@ name="$1"
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
 
-if ( !  cetskelgen "$skeltag" "$name" ) ; then 
-  echo cetskelgen "$skeltag" "$name" failed
+if ( !  cetskelgen analyzer "$name" ) ; then 
+  echo cetskelgen analyzer "$name" failed
   exit 2
 fi
 
 # ===========
 # == cmake ==
 # ===========
-tag="module"
-targ_name="$name"_"$tag"
+targ_name="$name"_module
 src_name=""$targ_name".cc"
-liblist="\${${tag}_lib_list}"
+liblist="\${module_lib_list}"
 
 cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
 
@@ -66,12 +59,12 @@ cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
 #bare bones fcl test
 
 physics:{
-   ${skeltag}s:{
-      $ep:{
+   analyzers:{
+      a1:{
          module_type: "$name"
       }
    }
-   p:["$ep"]
+   p:["a1"]
 }
 EOT
 

@@ -2,7 +2,6 @@
 
 # Usage: studio liblist  
 #
-# Can be shortened to 'studio ll'
 # Summary: Enumerate all libraries available in the project environment.
 
 # Help: Prints out information about all libraries available in all
@@ -10,7 +9,7 @@
 # both the CMake variable to be used for library linking and the path
 # to that library are given.
 #
-# All information is written to a file named library-list.txt.
+# Can be shortened to 'studio ll'
 
 if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source setup script"

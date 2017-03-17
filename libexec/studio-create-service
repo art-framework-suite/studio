@@ -1,35 +1,25 @@
 #!/usr/bin/env bash
-
-# Usage: studio create-service name
+# Usage: studio create-service <name>
 #
-# Can be shortened to 'studio cs name'
-# Summary: Writes a skeleton service plugin along with a FHiCL file to
-#          configure it.
+# Summary: Writes a skeleton service plugin and a FHiCL file to src
 #
-#          'studio create-service' will also appropriately update your source
-#          directory CMakeLists.txt file to compile and link your plugin
-#          library.
+# Help: studio create-service <name> 
 #
-#          NOTE: if you should decide to remove the generated source file,
-#          you must edit the CMakeLists.txt to remove the build commands
-#          related to it.
+#     Calls 'cetskelgen service:--scope,LEGACY <name>',
+#     creates an appropriate FHiCL filea
+#     and updates your source directory CMakeLists.txt file to compile
+#     and link your plugin library.
 #
-# Help: studio create-service
+#     NOTE: if you should decide to remove the generated source file,
+#     you must edit the CMakeLists.txt to remove the build commands
+#     related to it.
 #
-#     studio create-service myService
-#
-#     OUTPUT:
-#	src/myService_module.cc
-#	src/myService.fcl
-#	src/CMakeLists.txt
-
+#     Can be shortened to 'studio cs <name>'
 if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
   echo "Please source the setup script"
   exit 1
 fi
 
-skeltag="service"
-ep="s1"
 #checking for empty call
 if [ -z "$1" ]; then
 echo "'studio create-service' requires specification of a plugin name."
@@ -40,10 +30,8 @@ name="$1"
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
 
-skeltag="service:--scope,LEGACY"
-
-if ( !  cetskelgen "$skeltag" "$name" ) ; then 
-  echo cetskelgen "$skeltag" "$name" failed
+if ( !  cetskelgen service:--scope,LEGACY "$name" ) ; then 
+  echo cetskelgen service:--scope,LEGACY "$name" failed
   exit 2
 fi
 
@@ -51,9 +39,9 @@ fi
 # == cmake ==
 # ===========
 tag="service"
-targ_name="$name"_"$tag"
+targ_name="$name"_service
 src_name=""$targ_name".cc"
-liblist="\${${tag}_lib_list}"
+liblist="\${service_lib_list}"
 
 cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
 
