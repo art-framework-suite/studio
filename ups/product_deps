@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent studio	v0_04_02
+parent studio	v1_00_00
 no_fq_dir
 
 # These optional lines define the installed directories where headers,
@@ -21,12 +21,9 @@ libdir  product_dir     libexec
 # list all products here
 # the 4th field may be either optional or only_for_build
 product		version
-cetbuildtools   v5_04_03	-	only_for_build
+cetbuildtools   v5_06_07	-	only_for_build
 end_product_list
 
-qualifier	cetbuildtools
--nq-            -nq-
-end_qualifier_list
 
 table_fragment_begin
     execute("source ${UPS_PROD_DIR}/bin/.wrapper.sh", NO_UPS_ENV)
