@@ -12,7 +12,7 @@
 # The project command requires use of a UPS installed product to
 # provide the headers your code will include, the libraries to which
 # your new code will be linked, and the art framework modules and
-# servicesyour FHiCL configuration files will use. Typically this will
+# services your FHiCL configuration files will use. Typically this will
 # be the code distribution from an experiment, but it could be any UPS
 # product.
 #
@@ -24,7 +24,7 @@
 # If no qualifier is specified, the project command will attempt to use
 # whatever qualifiers are found for the selected version of the
 # product. If multiple qualifiers are available for that version,
-# project command attempts a reasonable choice. In this condition, 
+# project command attempts a reasonable choice. In this condition,
 # it is best to specify qualifiers on the command line.
 #
 # If -n <dirname> is specified, the project directory will be given
@@ -68,7 +68,7 @@
 #
 # 'setup.sh' is a bash script must be 'sourced' in each new shell
 # session in which you want to work on your project.
-# 
+#
 # EXAMPLES
 #    studio project lariatsoft v06_03_00 -q e10:prof
 #    studio project lariatsoft v06_03_00 -q e10:prof -n lariatsoft_project
@@ -120,11 +120,11 @@ set -- "${OPTARR[@]}"
 
 OPTIND=1
 while getopts $optstring opt;do
-    case ${opt} in 
-           v) 
+    case ${opt} in
+           v)
                 ver="$OPTARG"
                 ;;
-           q) 
+           q)
                 qual="$OPTARG"
                 ;;
            r)
@@ -133,7 +133,7 @@ while getopts $optstring opt;do
            n)
                 name="$OPTARG"
                 ;;
-     esac 
+     esac
 done
 
 shift $((OPTIND-1))
@@ -146,7 +146,7 @@ if [ $# == 0 ] ; then
 else
     exp=$1;
     shift;
-    if [ $# != 0 ] ; then 
+    if [ $# != 0 ] ; then
         ver=$1
         shift
         echo $@
@@ -264,24 +264,22 @@ fi
 #==============================================MAKING=====================================================
 #===========================================SETUP SCRIPT==================================================
 #=========================================================================================================
-if [ $(uname -s) = "Darwin" ]; then
-    cat << EOF > ${PROJ}/setup.sh
+cat << EOF > ${PROJ}/setup.sh
 #!/usr/bin/env bash
 setup studio
 setup $exp $ver -q $qual
 export STUDIO_PROJECT_PATH=$PROJ
 export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
 export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
+[[ -z "\${FHICL_FILE_PATH}" ]] && FHICL_FILE_PATH=$SRC_DIR || FHICL_FILE_PATH=$SRC_DIR:\$FHICL_FILE_PATH
+export FHICL_FILE_PATH
+EOF
+if [ $(uname -s) = "Darwin" ]; then
+    cat << EOF >> ${PROJ}/setup.sh
 export DYLD_LIBRARY_PATH=$BUILD_DIR/lib:\$DYLD_LIBRARY_PATH
 EOF
 else
-    cat << EOF > ${PROJ}/setup.sh
-#!/usr/bin/env bash
-setup studio
-setup $exp $ver -q $qual
-export STUDIO_PROJECT_PATH=$PROJ
-export STUDIO_PROJECT_BUILD_PATH=$BUILD_DIR
-export STUDIO_PROJECT_SRC_PATH=$SRC_DIR
+    cat << EOF >> ${PROJ}/setup.sh
 LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
 EOF
 fi
@@ -318,4 +316,3 @@ echo "The project directory ${PROJ} has been populated with default scripts."
 echo "Remember to 'source ${PROJ}/setup.sh' in each new shell"
 echo "Use 'studio help' for more details."
 echo ""
-

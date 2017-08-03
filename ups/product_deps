@@ -13,6 +13,7 @@ no_fq_dir
 # The only recognized values of the second field are product_dir, fq_dir, and -
 # The third field is not constrained.
 #
+fcldir  -
 bindir	product_dir	bin
 libdir  product_dir     libexec
 # if define_pythonpath is enabled, the PYTHONPATH variable will be set
