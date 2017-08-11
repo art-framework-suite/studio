@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Usage: studio liblist  
+# Usage: studio liblist
 #
 # Summary: Enumerate all libraries available in the project environment.
 
@@ -12,40 +12,49 @@
 # Can be shortened to 'studio ll'
 
 if [ -z $STUDIO_PROJECT_SRC_PATH ]; then
-  echo "Please source setup script"
-  exit 1
+    echo "Please source setup script"
+    exit 1
 fi
-  active_prods=$(ups active | grep -v "Active ups products:" | awk '{print $1}' | tr '[a-z]' '[A-Z]' | tr '\n' ';')
-  trimmed_prods=${active_prods::${#active_prods}-1}
-  declare -A prod_map
-  IFS=';' read -r -a dirs_list <<< "$trimmed_prods"
-  for prod in "${dirs_list[@]}"
-  do
+active_prods=$(ups active | grep -v "Active ups products:" | awk '{print $1}' | tr '[a-z]' '[A-Z]' | tr '\n' ';')
+trimmed_prods=${active_prods::${#active_prods}-1}
+declare -A prod_map
+IFS=';' read -r -a dirs_list <<< "$trimmed_prods"
+for prod in "${dirs_list[@]}"
+do
     lib=$(eval echo "\${${prod}_LIB}")
-    if [ -z ${lib} ]; then 
-     continue 
+    if [ -z ${lib} ]; then
+        continue
     else
-      prod_map["$prod"]=$lib
+        prod_map["$prod"]=$lib
     fi
-  done
-  
-  printf "%-15s %-50s %s\n" package variable library
-  for prod_key in ${!prod_map[@]}
-  do
+done
+
+# ROOT is a special case
+if [ "$ROOTSYS" != "" ]; then
+    prod_map["ROOT"]=$ROOTSYS/lib
+fi
+
+
+printf "%-15s %-50s %s\n" package variable library
+for prod_key in ${!prod_map[@]}
+do
     shopt -s nullglob
     so_files=$(eval echo "${prod_map[$prod_key]}/*.{so,dylib}")
     IFS=' ' read -r -a so_list <<< "$so_files"
     if [ ${#so_list[@]} -eq 0 ]; then
-      continue
+        continue
     else
-      for so in "${so_list[@]}"
-      do 
-        so_name=${so##${prod_map[$prod_key]}/}
-        libname1=${so_name%%\.so}
-        libname2=${libname1%%\.dylib}
-        libname=${libname2##lib}
-        package=$(echo $prod_key | tr '[A-Z]' '[a-z]')
-        printf "%-15s %-50s %s\n" $package $libname $so
-      done
+        for so in "${so_list[@]}"
+        do
+            so_name=${so##${prod_map[$prod_key]}/}
+            libname1=${so_name%%\.so}
+            libname2=${libname1%%\.dylib}
+            libname=${libname2##lib}
+            package=$(echo $prod_key | tr '[A-Z]' '[a-z]')
+            if [ "${package}" == "root" ]; then
+                libname=root_${libname}
+            fi
+            printf "%-15s %-50s %s\n" $package $libname $so
+        done
     fi
-  done
+done

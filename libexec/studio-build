@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Usage: studio build [make options]
-# 
+#
 # Summary: compile and link (build) code
 # Help: This command compiles and links your code.
 #
@@ -19,8 +19,10 @@ fi
 
 # checking for dir paths
 
-#some variables I want
-in_source=true
+# The in_source variable can eventually be used to determine whether
+# the libraries for only specific directories should be built.  Right
+# now, this feature is not supported.
+in_source=false
 working_dir="$PWD"
 build_dirs="no args"
 
@@ -69,18 +71,18 @@ build_dirs="no args"
 #fi
 
 if [ "$PWD" != "$STUDIO_PROJECT_BUILD_PATH" ]; then
-    cd $STUDIO_PROJECT_BUILD_PATH 
+    cd $STUDIO_PROJECT_BUILD_PATH
 fi
 
 export CC=`which gcc`
 export CXX=`which g++`
 
-echo "in_source = $in_source"
-echo "working_dir = $working_dir"
-echo "build_dirs = $build_dirs"
+# echo "in_source = $in_source"
+# echo "working_dir = $working_dir"
+# echo "build_dirs = $build_dirs"
 echo "pwd = $PWD"
 
 echo cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $STUDIO_PROJECT_BUILD_PATH ..
 cmake -D IS_IN_SOURCE:BOOL=$in_source -D WORKING_DIR:STRING="$working_dir" -D BUILD_DIRS:STRING="$build_dirs" -B $STUDIO_PROJECT_BUILD_PATH ..
-echo make ${mflags}
+echo Make command used: \'make ${mflags}\'
 make ${mflags}
