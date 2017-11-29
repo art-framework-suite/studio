@@ -22,7 +22,7 @@ libdir  product_dir     libexec
 # list all products here
 # the 4th field may be either optional or only_for_build
 product		version
-cetbuildtools   v5_06_07	-	only_for_build
+cetbuildtools   v6_00_02	-	only_for_build
 end_product_list
 
 
