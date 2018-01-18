@@ -292,7 +292,7 @@ fi
 
 #CMake stuff
 cat $STUDIO_INC/helpers.cmake > ${PROJ}/helpers.cmake
-cat $STUDIO_INC/setliblist.cmake > ${PROJ}/setliblist.cmake
+cat $STUDIO_INC/libsForPlugins.cmake > ${PROJ}/libsForPlugins.cmake
 
 #cmake macro
 
