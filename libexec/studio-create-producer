@@ -3,10 +3,10 @@
 #
 # Summary: Writes a skeleton producer plugin and a FHiCL file to src
 #
-# Help: studio create-producer <name> 
+# Help: studio create-producer <name>
 #
 #     Calls 'cetskelgen producer <name>',
-#     creates an appropriate FHiCL file, 
+#     creates an appropriate FHiCL file,
 #     and updates your source directory CMakeLists.txt file to compile
 #     and link your plugin library.
 #
@@ -31,7 +31,7 @@ name="$1"
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
 
-if ( !  cetskelgen producer "$name" ) ; then 
+if ( !  cetskelgen producer "$name" ) ; then
   echo cetskelgen producer "$name" failed
   exit 2
 fi
@@ -39,30 +39,34 @@ fi
 # ===========
 # == cmake ==
 # ===========
-targ_name="$name"_module
+
+# Trim everything up to and including the last colon, in case somebody
+# specified a namespace-qualified module name.
+module_spec="${name##*:}"
+targ_name="${module_spec}"_module
 src_name=""$targ_name".cc"
 liblist="\${module_lib_list}"
 
 cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
 
-#"$name" lib linking
+# "$module_spec" lib linking
 add_library($targ_name SHARED $src_name)
 target_link_libraries($targ_name $liblist)
 
 EOT
 
-touch $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
-cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
-#"$targ_name".fcl
-#bare bones fcl test
+touch $STUDIO_PROJECT_SRC_PATH/"$module_spec".fcl
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$module_spec".fcl
+# ${module_spec}.fcl
+# bare bones fcl test
 
-physics:{
-   producers:{
-      p1:{
-         module_type: "$name"
-      }
-   }
-   p:["p1"]
+physics: {
+  producers: {
+    p1: {
+      module_type: "${module_spec}"
+    }
+  }
+  p: [p1]
 }
 EOT
 

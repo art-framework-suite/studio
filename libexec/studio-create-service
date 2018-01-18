@@ -3,7 +3,7 @@
 #
 # Summary: Writes a skeleton service plugin and a FHiCL file to src
 #
-# Help: studio create-service <name> 
+# Help: studio create-service <name>
 #
 #     Calls 'cetskelgen service:--scope,LEGACY <name>',
 #     creates an appropriate FHiCL filea
@@ -30,7 +30,7 @@ name="$1"
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
 
-if ( !  cetskelgen service:--scope,LEGACY "$name" ) ; then 
+if ( !  cetskelgen service:--scope,LEGACY "$name" ) ; then
   echo cetskelgen service:--scope,LEGACY "$name" failed
   exit 2
 fi
@@ -38,25 +38,29 @@ fi
 # ===========
 # == cmake ==
 # ===========
-tag="service"
-targ_name="$name"_service
+
+# Trim everything up to and including the last colon, in case somebody
+# specified a namespace-qualified service name.
+service_spec="${name##*:}"
+targ_name="${service_spec}"_service
 src_name=""$targ_name".cc"
 liblist="\${service_lib_list}"
 
 cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
 
-#"$name" lib linking
+# "$service_spec" lib linking
 add_library($targ_name SHARED $src_name)
 target_link_libraries($targ_name $liblist)
 
 EOT
 
-touch $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
-cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
-#"$targ_name".fcl
-#bare bones fcl test
+touch $STUDIO_PROJECT_SRC_PATH/"$service_spec".fcl
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$service_spec".fcl
+# ${service_spec}.fcl
+# bare bones fcl test
+
 services: {
-  $name: {}
+  ${service_spec}: {}
 }
 EOT
 

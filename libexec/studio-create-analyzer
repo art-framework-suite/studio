@@ -4,10 +4,10 @@
 #
 # Summary: Writes a skeleton analyzer plugin and a FHiCL file to src
 #
-# Help: studio create-analyzer <name> 
+# Help: studio create-analyzer <name>
 #
 #     Calls 'cetskelgen analyzer <name>',
-#     creates an appropriate FHiCL file, 
+#     creates an appropriate FHiCL file,
 #     and updates your source directory CMakeLists.txt file to compile
 #     and link your plugin library.
 #
@@ -33,7 +33,7 @@ name="$1"
 cd "$STUDIO_PROJECT_SRC_PATH"
 echo "$STUDIO_PROJECT_SRC_PATH"
 
-if ( !  cetskelgen analyzer "$name" ) ; then 
+if ( !  cetskelgen analyzer "$name" ) ; then
   echo cetskelgen analyzer "$name" failed
   exit 2
 fi
@@ -41,30 +41,34 @@ fi
 # ===========
 # == cmake ==
 # ===========
-targ_name="$name"_module
+
+# Trim everything up to and including the last colon, in case somebody
+# specified a namespace-qualified module name.
+module_spec="${name##*:}"
+targ_name="${module_spec}"_module
 src_name=""$targ_name".cc"
 liblist="\${module_lib_list}"
 
 cat << EOT >> $STUDIO_PROJECT_SRC_PATH/CMakeLists.txt
 
-#"$name" lib linking
+# "$module_spec" lib linking
 add_library($targ_name SHARED $src_name)
 target_link_libraries($targ_name $liblist)
 
 EOT
 
-touch $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
-cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$targ_name".fcl
-#"$targ_name".fcl
-#bare bones fcl test
+touch $STUDIO_PROJECT_SRC_PATH/"$module_spec".fcl
+cat << EOT >> $STUDIO_PROJECT_SRC_PATH/"$module_spec".fcl
+# ${module_spec}.fcl
+# bare bones fcl test
 
-physics:{
-   analyzers:{
-      a1:{
-         module_type: "$name"
-      }
-   }
-   p:["a1"]
+physics: {
+  analyzers: {
+    a1: {
+      module_type: "${module_spec}"
+    }
+  }
+  p: [a1]
 }
 EOT
 
