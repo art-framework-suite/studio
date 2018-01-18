@@ -25,7 +25,8 @@ macro(setliblist)
         ${fhiclcpp}
         ${cetlib}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
       list(INSERT module_lib_list 0
         ${art_Framework_Core}
         ${art_Framework_Principal}
@@ -36,7 +37,8 @@ macro(setliblist)
         ${cetlib}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
       list(INSERT source_lib_list 0
         ${art_Framework_IO_Sources}
         ${art_Framework_Core}
@@ -48,7 +50,8 @@ macro(setliblist)
         ${cetlib}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
     elseif (${art_ver} STRLESS ${next_art_ver})
       # art pre v2.06.00
       list(INSERT service_lib_list 0
@@ -60,7 +63,8 @@ macro(setliblist)
         ${fhiclcpp}
         ${cetlib}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
       list(INSERT module_lib_list 0
         ${art_Framework_Core}
         ${art_Framework_Principal}
@@ -74,7 +78,8 @@ macro(setliblist)
         ${cetlib}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
       list(INSERT source_lib_list 0
         ${art_Framework_IO_Sources}
         ${art_Framework_Core}
@@ -89,7 +94,8 @@ macro(setliblist)
         ${cetlib}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
     else()
       # art post v2.06.00
       list(INSERT service_lib_list 0
@@ -101,7 +107,8 @@ macro(setliblist)
         ${cetlib}
         ${cetlib_except}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
       list(INSERT module_lib_list 0
         ${art_Framework_Core}
         ${art_Framework_Principal}
@@ -114,7 +121,8 @@ macro(setliblist)
         ${cetlib_except}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
       list(INSERT source_lib_list 0
         ${art_Framework_IO_Sources}
         ${art_Framework_Core}
@@ -128,7 +136,8 @@ macro(setliblist)
         ${cetlib_except}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
     endif()
 
   elseif(NOT ${canvas_ver} EQ "")
@@ -141,7 +150,8 @@ macro(setliblist)
         ${cetlib_except}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
     else()
       list(INSERT lib_list 0
         ${canvas}
@@ -149,7 +159,8 @@ macro(setliblist)
         ${cetlib}
         ${root_Core}
         ${boost_filesystem}
-        ${boost_system})
+        ${boost_system}
+        ${MF_MessageLogger})
     endif()
   endif()
 
