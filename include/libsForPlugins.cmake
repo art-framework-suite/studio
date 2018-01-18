@@ -9,7 +9,7 @@ macro(canvasver)
   set(min_canvas_ver "v1_06_00")
 endmacro()
 
-macro(setliblist)
+macro(libsForPlugins)
 
 
   # decide on which set of libraries to use based on art version

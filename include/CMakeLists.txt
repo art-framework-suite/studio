@@ -1,3 +1,3 @@
-install(FILES CMakeLists.txt.tmpl helpers.cmake setliblist.cmake
+install(FILES CMakeLists.txt.tmpl helpers.cmake libsForPlugins.cmake
         DESTINATION "${product}/${version}/include"
 )
