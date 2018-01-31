@@ -34,6 +34,10 @@ if [ "$ROOTSYS" != "" ]; then
     prod_map["ROOT"]=$ROOTSYS/lib
 fi
 
+# CLHEP is a special case
+if [ "$CLHEP_LIB_DIR" != "" ]; then
+    prod_map["CLHEP"]=$CLHEP_LIB_DIR
+fi
 
 printf "%-15s %-50s %s\n" package variable library
 for prod_key in ${!prod_map[@]}
