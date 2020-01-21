@@ -1,6 +1,6 @@
 # The parent line must be the first non-comment line in the file
 # This line defines the product name and version
-parent studio	v1_01_00
+parent studio   v1_02_00
 no_fq_dir
 
 # These optional lines define the installed directories where headers,
@@ -14,23 +14,21 @@ no_fq_dir
 # The third field is not constrained.
 #
 fcldir  -
-bindir	product_dir	bin
+bindir  product_dir     bin
 libdir  product_dir     libexec
 # if define_pythonpath is enabled, the PYTHONPATH variable will be set
 #define_pythonpath
 
 # list all products here
 # the 4th field may be either optional or only_for_build
-product		version
-cetbuildtools   v6_00_02	-	only_for_build
+product         version
+cetbuildtools   v7_14_00        -       only_for_build
 end_product_list
 
 
 table_fragment_begin
-    execute("source ${UPS_PROD_DIR}/bin/.wrapper.sh", NO_UPS_ENV)
-    execute("source ${UPS_PROD_DIR}/bin/.studio.bash", NO_UPS_ENV)
-# this is a table file fragment
-# it will be copied verbatim
+  execute("source ${UPS_PROD_DIR}/bin/.wrapper.sh", NO_UPS_ENV)
+  execute("source ${UPS_PROD_DIR}/bin/.studio.bash", NO_UPS_ENV)
 table_fragment_end
 
 # Preserve tabs and formatting in emacs and vi / vim:
